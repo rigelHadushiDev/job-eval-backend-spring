@@ -1,0 +1,21 @@
+spring:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: jobApplicationEvalDB
+      driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: uH+MR0o8LJgOHbWWVG3oKdXLZ7sO8q2pHMc+z1IRUlA=
+      expiration: 86400000
