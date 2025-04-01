@@ -1,4 +1,4 @@
-package com.example.job_application_eval.auth;
+package com.example.job_application_eval.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationRequest {
-    private String firstName;
-    private String lastName;
+@Builder
+public class LoginUserDto {
+
     private String email;
     private String password;
 }
