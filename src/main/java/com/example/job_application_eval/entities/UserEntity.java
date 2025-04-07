@@ -58,7 +58,7 @@ public class UserEntity implements UserDetails {
     private String address;
 
     @Column(name = "mobile_number")
-    private Integer mobileNumber;
+    private String mobileNumber;
 
     @Column(name = "full_name")
     private String fullName;

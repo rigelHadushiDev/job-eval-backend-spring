@@ -62,20 +62,9 @@ public class RoleAuthorizationFilter extends OncePerRequestFilter {
 
         List<String> allowedRoles = RouteRoleWhitelist.WHITELIST.get(routeKey);
 
-        System.out.println("🔐 Incoming request:");
-        System.out.println("➡️  Method: " + method);
-        System.out.println("➡️  Path: " + path);
-        System.out.println("👤 Username: " + username);
-        System.out.println("🔑 Roles: " + roles);
-        System.out.println("🧭 Route key: " + routeKey);
-        System.out.println("✅ Allowed roles: " + allowedRoles);
-
         if (allowedRoles == null || roles.stream().noneMatch(allowedRoles::contains)) {
-            System.out.println("🚫 Access denied. Your roles do not match.");
             throw new AccessDeniedException("Access Denied");
         }
-
-        System.out.println("✅ Access granted.");
 
         List<GrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
@@ -89,8 +78,6 @@ public class RoleAuthorizationFilter extends OncePerRequestFilter {
 
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        System.out.println("✅ Authorization successful. Proceeding with request.\n");
 
         filterChain.doFilter(request, response);
     }
