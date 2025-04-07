@@ -1,20 +1,29 @@
 package com.example.job_application_eval.service;
 
+
+import com.example.job_application_eval.dtos.ChangePasswordDto;
+import com.example.job_application_eval.dtos.UserDto;
 import com.example.job_application_eval.entities.UserEntity;
-import com.example.job_application_eval.repository.UserRepository;
-import org.springframework.stereotype.Service;
+import com.example.job_application_eval.responses.GeneralSuccessfulResp;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-@Service
-public class UserService {
+public interface UserService {
+    List<UserEntity> allUsers();
 
-    private final UserRepository userRepository;
-    public UserService(UserRepository userRepository, EmailService emailService) {
-        this.userRepository = userRepository;
-    }
+    UserEntity getCurrentUserEntity();
 
-    public List<UserEntity> allUsers() {
-        return userRepository.findAll();
-    }
+    GeneralSuccessfulResp changeUserPassword(ChangePasswordDto changePasswordDto);
+
+    UserEntity deleteYourUserAccount();
+
+    UserEntity deleteUser(Long userId);
+
+    UserEntity editCurrUserData(UserEntity userEntity);
+
+    Page<UserEntity> searchUsersByFullName(String fullName, Pageable pageable);
+
+    UserEntity save(UserEntity userEntity);
 }

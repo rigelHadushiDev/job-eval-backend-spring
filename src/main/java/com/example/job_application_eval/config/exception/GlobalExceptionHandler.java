@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 
+import java.nio.file.AccessDeniedException;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +27,23 @@ public class GlobalExceptionHandler {
         errorBody.put("status", statusCode.value());
         errorBody.put("error", (status != null) ? status.getReasonPhrase() : "Unknown Error");  // FIXED
         errorBody.put("path", request.getRequestURI());
-        errorBody.put("message", ex.getReason());  // Display the custom message from the exception
+        errorBody.put("message", ex.getReason());
 
         return new ResponseEntity<>(errorBody, statusCode);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        Map<String, Object> errorBody = new HashMap<>();
+        errorBody.put("timestamp", ZonedDateTime.now());
+        errorBody.put("status", status.value());
+        errorBody.put("error", status.getReasonPhrase());
+        errorBody.put("path", request.getRequestURI());
+        errorBody.put("message", "Access denied");
+
+        return new ResponseEntity<>(errorBody, status);
     }
 
     @ExceptionHandler(Exception.class)

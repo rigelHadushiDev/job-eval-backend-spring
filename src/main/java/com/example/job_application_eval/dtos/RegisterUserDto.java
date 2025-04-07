@@ -1,4 +1,4 @@
-package com.example.job_application_eval.dto;
+package com.example.job_application_eval.dtos;
 
 import com.example.job_application_eval.entities.Gender;
 import com.example.job_application_eval.entities.Role;
@@ -14,8 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class RegisterUserDto {
-
-    private String username;
+    
     private String email;
     private String firstname;
     private String lastname;

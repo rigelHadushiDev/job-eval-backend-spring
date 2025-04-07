@@ -1,4 +1,4 @@
-package com.example.job_application_eval.dto;
+package com.example.job_application_eval.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginUserDto {
-
-    private String email;
-    private String password;
+public class ResendGenPassResp {
+    private String message;
 }
