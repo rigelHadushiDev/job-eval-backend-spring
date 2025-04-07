@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +38,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity getCurrentUserEntity() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+        return userRepository.findByEmail(email).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "userNotFound"));
-        user.setPassword(null);
-        return user;
     }
 
     @Override
@@ -75,9 +74,28 @@ public class UserServiceImpl implements UserService {
 
         UserEntity currentUser = getCurrentUserEntity();
 
-        Optional.ofNullable(userEntity.getFirstname()).ifPresent(currentUser::setFirstname);
-        Optional.ofNullable(userEntity.getLastname()).ifPresent(currentUser::setLastname);
-        Optional.ofNullable(userEntity.getEmail()).ifPresent(currentUser::setEmail);
+        AtomicBoolean fullNameChanged = new AtomicBoolean(false);
+
+        Optional.ofNullable(userEntity.getFirstname()).ifPresent(newFirstName -> {
+            if (!newFirstName.equals(currentUser.getFirstname())) {
+                currentUser.setFirstname(newFirstName);
+                fullNameChanged.set(true);
+            }
+        });
+
+        Optional.ofNullable(userEntity.getLastname()).ifPresent(newLastName -> {
+            if (!newLastName.equals(currentUser.getLastname())) {
+                currentUser.setLastname(newLastName);
+                fullNameChanged.set(true);
+            }
+        });
+
+        if (fullNameChanged.get()) {
+            String updatedFirst = Optional.ofNullable(currentUser.getFirstname()).orElse("");
+            String updatedLast = Optional.ofNullable(currentUser.getLastname()).orElse("");
+            currentUser.setFullName((updatedFirst + " " + updatedLast).trim());
+        }
+
         Optional.ofNullable(userEntity.getGender()).ifPresent(currentUser::setGender);
         Optional.ofNullable(userEntity.getBirthdate()).ifPresent(currentUser::setBirthdate);
         Optional.ofNullable(userEntity.getAddress()).ifPresent(currentUser::setAddress);
@@ -112,7 +130,7 @@ public class UserServiceImpl implements UserService {
                 .passwordChanged(false)
                 .build();
 
-        authService.sendVerificationEmail(user, hashedTemporaryPassword);
+        authService.sendVerificationEmail(user, rawTemporaryPassword);
         return userRepository.save(user);
     }
 }

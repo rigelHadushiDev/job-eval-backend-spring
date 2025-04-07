@@ -31,12 +31,6 @@ public class UserController {
     @GetMapping("/currentUser")
     public ResponseEntity<UserDto> getCurrentUser() {
         UserEntity currentUserEntity = userService.getCurrentUserEntity();
-
-            System.out.println("👤 Found user: " + currentUserEntity.getEmail());
-            System.out.println("👤 Role: " + currentUserEntity.getRole());
-            System.out.println("👤 ID: " + currentUserEntity.getId());
-
-
         return new ResponseEntity<>(userMapper.mapTo(currentUserEntity), HttpStatus.OK);
     }
 
@@ -64,14 +58,14 @@ public class UserController {
         return new ResponseEntity<>( userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/currUser")
     public ResponseEntity<UserDto> deleteCurrentUser() {
         UserEntity deletedCurrUserAcc = userService.deleteYourUserAccount();
         return new ResponseEntity<>(userMapper.mapTo(deletedCurrUserAcc), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<UserDto> deleteUser(@PathVariable("userId") Long userId) {
+    @DeleteMapping()
+    public ResponseEntity<UserDto> deleteUser(@RequestParam("userId") Long userId) {
         UserEntity updatedUser = userService.deleteUser(userId);
         return new ResponseEntity<>( userMapper.mapTo(updatedUser), HttpStatus.OK);
     }

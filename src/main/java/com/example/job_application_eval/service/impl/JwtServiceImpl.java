@@ -104,11 +104,10 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public List<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
-        System.out.println("🧾 Full token claims: " + claims);
         Object roleObj = claims.get("role");
 
         if (roleObj instanceof String role) {
-            return List.of(role); // ✅ returns [ADMIN], etc.
+            return List.of(role);
         }
 
         return List.of();
