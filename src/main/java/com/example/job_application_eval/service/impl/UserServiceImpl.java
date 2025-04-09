@@ -98,7 +98,8 @@ public class UserServiceImpl implements UserService {
 
         Optional.ofNullable(userEntity.getGender()).ifPresent(currentUser::setGender);
         Optional.ofNullable(userEntity.getBirthdate()).ifPresent(currentUser::setBirthdate);
-        Optional.ofNullable(userEntity.getAddress()).ifPresent(currentUser::setAddress);
+        Optional.ofNullable(userEntity.getCity()).ifPresent(currentUser::setCity);
+        Optional.ofNullable(userEntity.getCountry()).ifPresent(currentUser::setCountry);
         Optional.ofNullable(userEntity.getMobileNumber()).ifPresent(currentUser::setMobileNumber);
         Optional.ofNullable(userEntity.getFullName()).ifPresent(currentUser::setFullName);
 

@@ -1,5 +1,7 @@
 package com.example.job_application_eval.entities;
 
+import com.example.job_application_eval.entities.enums.Gender;
+import com.example.job_application_eval.entities.enums.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -55,7 +56,9 @@ public class UserEntity implements UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
 
-    private String address;
+    private String City;
+
+    private String Country;
 
     @Column(name = "mobile_number")
     private String mobileNumber;

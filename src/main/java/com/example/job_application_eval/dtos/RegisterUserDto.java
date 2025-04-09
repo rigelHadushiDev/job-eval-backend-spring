@@ -1,7 +1,7 @@
 package com.example.job_application_eval.dtos;
 
-import com.example.job_application_eval.entities.Gender;
-import com.example.job_application_eval.entities.Role;
+import com.example.job_application_eval.entities.enums.Gender;
+import com.example.job_application_eval.entities.enums.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
