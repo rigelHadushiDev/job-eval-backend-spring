@@ -24,9 +24,10 @@ import java.util.List;
 @Table(name = "_user")
 public class UserEntity implements UserDetails {
 
-    @Id
+    @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(nullable = false )
     private String firstname;
@@ -36,6 +37,9 @@ public class UserEntity implements UserDetails {
 
     @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -56,8 +60,10 @@ public class UserEntity implements UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
 
+    @Column( nullable = false)
     private String City;
 
+    @Column( nullable = false)
     private String Country;
 
     @Column(name = "mobile_number")
@@ -78,8 +84,9 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {

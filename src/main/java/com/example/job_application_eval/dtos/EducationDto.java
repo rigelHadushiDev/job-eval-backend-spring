@@ -20,7 +20,7 @@ import java.util.Date;
 @Builder
 public class EducationDto {
 
-    private Long id;
+    private Long educationId;
 
     @NotNull(message = "Education level is required")
     private EducationLevel educationLevel;
@@ -28,7 +28,7 @@ public class EducationDto {
     private String fieldOfStudy;
 
     @NotBlank(message = "Institution name is required")
-    private String insitution;
+    private String institution;
 
     @NotNull(message = "Finished field must be specified")
     private Boolean finished;

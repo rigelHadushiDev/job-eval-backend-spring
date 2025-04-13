@@ -14,9 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WorkExpDto {
+public class WorkExperienceDto {
 
-    private Long id;
+    private Long workExperienceId;
 
     @NotBlank(message = "Job Title can not be empty.")
     private String jobTitle;

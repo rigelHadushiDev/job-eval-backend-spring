@@ -20,7 +20,8 @@ public class SkillEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "skill_id")
+    private Long skillId;
 
     @Column(nullable = false, name = "skill_name" )
     private String skillName;

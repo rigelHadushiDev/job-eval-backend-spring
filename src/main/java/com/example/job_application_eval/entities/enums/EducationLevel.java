@@ -5,11 +5,9 @@ public enum EducationLevel {
     PRIMARY,
     SECONDARY,
     HIGH_SCHOOL,
-    ASSOCIATE,
     BACHELOR,
     MASTER,
     DOCTORATE,
     POST_DOCTORATE,
-    DIPLOMA,
     OTHER
 }

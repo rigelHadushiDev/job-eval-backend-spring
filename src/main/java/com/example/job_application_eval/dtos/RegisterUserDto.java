@@ -17,6 +17,7 @@ import java.util.Date;
 public class RegisterUserDto {
     
     private String email;
+    private String username;
     private String firstname;
     private String lastname;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")

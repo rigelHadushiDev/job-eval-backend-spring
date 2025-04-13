@@ -21,7 +21,8 @@ public class EducationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "education_id")
+    private Long educationId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "education_level", nullable = false)
@@ -31,7 +32,7 @@ public class EducationEntity {
     private String fieldOfStudy;
 
     @Column(nullable = false)
-    private String insitution;
+    private String institution;
 
     @Column
     private Boolean finished;

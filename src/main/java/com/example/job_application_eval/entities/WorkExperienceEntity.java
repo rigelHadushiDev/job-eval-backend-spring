@@ -17,12 +17,13 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "work_experience")
-public class WorkExpEntity {
+public class WorkExperienceEntity {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "work_experience_id")
+    private Long workExperienceId;
 
     @Column(nullable = false, name = "job_title" )
     private String jobTitle;
