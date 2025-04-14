@@ -9,6 +9,7 @@ public class RouteRoleWhitelist {
     public static final Map<String, List<String>> WHITELIST = new HashMap<>();
 
     static {
+
         // User routes
         WHITELIST.put("GET:/user/currentUser", List.of("ADMIN", "RECRUITER", "USER"));
         WHITELIST.put("GET:/user/listUsers", List.of("ADMIN", "RECRUITER"));
@@ -25,5 +26,20 @@ public class RouteRoleWhitelist {
         WHITELIST.put("GET:/education/getEducation", List.of("USER", "RECRUITER", "ADMIN"));
         WHITELIST.put("POST:/education/create", List.of("USER"));
         WHITELIST.put("PUT:/education/edit", List.of("USER"));
+
+        // SkillController routes
+        WHITELIST.put("DELETE:/skill", List.of("USER"));
+        WHITELIST.put("GET:/skill/userSkills", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("GET:/skill/getSkill", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("POST:/skill/create", List.of("USER"));
+        WHITELIST.put("PUT:/skill/edit", List.of("USER"));
+
+        // WorkExperienceController routes
+        WHITELIST.put("DELETE:/workExp", List.of("USER"));
+        WHITELIST.put("GET:/workExp/userWorkExperiences", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("GET:/workExp/getWorkExperience", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("POST:/workExp/create", List.of("USER"));
+        WHITELIST.put("PUT:/workExp/edit", List.of("USER"));
+
     }
 }

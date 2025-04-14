@@ -4,6 +4,7 @@ import com.example.job_application_eval.entities.SkillEntity;
 import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.service.SkillService;
 import com.example.job_application_eval.validation.OnEditSkills;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class SkillController {
 
 
     @PostMapping("create")
-    public ResponseEntity<SkillDto> createSkill(@RequestBody SkillDto skillDto){
+    public ResponseEntity<SkillDto> createSkill(@Valid @RequestBody SkillDto skillDto){
         SkillEntity skillEntity = mapper.mapFrom(skillDto);
         SkillEntity createdSkill = skillService.save(skillEntity);
         return new ResponseEntity<>( mapper.mapTo(createdSkill), HttpStatus.OK);

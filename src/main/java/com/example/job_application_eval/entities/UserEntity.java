@@ -60,10 +60,11 @@ public class UserEntity implements UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
 
-    @Column( nullable = false)
+    @Column()
     private String City;
 
-    @Column( nullable = false)
+    @Column()
+
     private String Country;
 
     @Column(name = "mobile_number")

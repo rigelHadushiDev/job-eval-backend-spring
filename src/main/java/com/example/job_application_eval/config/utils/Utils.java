@@ -61,7 +61,8 @@ public class Utils {
         Period period = Period.between(startDate, effectiveEndDate);
 
         double years = period.getYears() + (period.getMonths() / 12.0) + (period.getDays() / 365.0);
-        workExp.setTotalYears(years);
+        double roundedYears = Math.round(years * 10.0) / 10.0;
+        workExp.setTotalYears(roundedYears);
     }
 
     private LocalDate toLocalDate(Date date) {

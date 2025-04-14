@@ -7,6 +7,7 @@ import com.example.job_application_eval.entities.WorkExperienceEntity;
 import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.service.WorkExperienceService;
 import com.example.job_application_eval.validation.OnEditWorkExp;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class WorkExperienceController {
 
 
     @PostMapping("create")
-    public ResponseEntity<WorkExperienceDto> createWorkExperience(@RequestBody WorkExperienceDto WorkExperienceDto) {
+    public ResponseEntity<WorkExperienceDto> createWorkExperience(@Valid  @RequestBody WorkExperienceDto WorkExperienceDto) {
         WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(WorkExperienceDto);
         WorkExperienceEntity updatedWorkExperience = workExperienceService.save(WorkExperienceEntity);
         return new ResponseEntity<>(mapper.mapTo(updatedWorkExperience), HttpStatus.OK);

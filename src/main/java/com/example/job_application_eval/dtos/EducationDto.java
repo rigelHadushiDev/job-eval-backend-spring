@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,18 +23,18 @@ import java.util.Date;
 @Builder
 public class EducationDto {
 
-    @NotNull(groups = {OnEditEducation.class}, message=  "Education Id is required")
+    @NotNull(groups = {OnEditEducation.class}, message = "Education Id is required")
     private Long educationId;
 
-    @NotNull(message = "Education level is required")
+    @NotNull(message = "Education level is required", groups = {Default.class, OnEditEducation.class})
     private EducationLevel educationLevel;
 
     private String fieldOfStudy;
 
-    @NotBlank(message = "Institution name is required")
+    @NotBlank(message = "Institution name is required", groups = {Default.class, OnEditEducation.class})
     private String institution;
 
-    @NotNull(message = "Finished field must be specified")
+    @NotNull(message = "Finished field must be specified", groups = {Default.class, OnEditEducation.class})
     private Boolean finished;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
