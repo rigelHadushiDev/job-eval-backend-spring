@@ -40,4 +40,6 @@ public class EducationDto {
     private Date graduationDate;
 
     private String achievementsDescription;
+
+    private Long userId;
 }

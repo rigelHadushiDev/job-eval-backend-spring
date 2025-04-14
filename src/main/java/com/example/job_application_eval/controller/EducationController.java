@@ -55,8 +55,8 @@ public class EducationController {
     @PutMapping("edit")
     public ResponseEntity<EducationDto> editEducation(@Validated(OnEditEducation.class) @RequestBody EducationDto educationDto){
         EducationEntity educationEntity = educationMapper.mapFrom(educationDto);
-        EducationEntity updatedUser = educationService.editEducation(educationEntity);
-        return new ResponseEntity<>( educationMapper.mapTo(updatedUser), HttpStatus.OK);
+        EducationEntity updatedEducation = educationService.editEducation(educationEntity);
+        return new ResponseEntity<>( educationMapper.mapTo(updatedEducation), HttpStatus.OK);
     }
 
 }

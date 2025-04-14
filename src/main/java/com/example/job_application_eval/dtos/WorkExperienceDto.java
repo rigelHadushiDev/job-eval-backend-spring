@@ -37,4 +37,6 @@ public class WorkExperienceDto {
     private String description;
 
     private Double totalYears;
+
+    private Long userId;
 }

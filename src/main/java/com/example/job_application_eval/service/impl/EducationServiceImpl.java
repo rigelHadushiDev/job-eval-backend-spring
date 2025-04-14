@@ -42,6 +42,11 @@ public class EducationServiceImpl implements EducationService {
     @Override
     public EducationEntity editEducation(EducationEntity educationEntity) {
         checkFieldOfStudy(educationEntity);
+
+        EducationEntity currentEducation =  educationRepository.findByEducationId(educationEntity.getEducationId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "educationNotFound"));
+
+        utils.assertCurrentUserOwns(currentEducation.getUser().getUserId());
         return educationRepository.save(educationEntity);
     }
 
