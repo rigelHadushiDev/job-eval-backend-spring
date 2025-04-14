@@ -8,6 +8,7 @@ import com.example.job_application_eval.responses.GeneralSuccessfulResp;
 import com.example.job_application_eval.service.UserService;
 import com.example.job_application_eval.service.impl.UserServiceImpl;
 import com.example.job_application_eval.validation.OnCreateUser;
+import com.example.job_application_eval.validation.OnEditUser;
 import com.example.job_application_eval.validation.OnSignUpUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class UserController {
 
     @PatchMapping()
     public ResponseEntity<UserDto> editCurrUserData(
+            @Validated(OnEditUser.class)
             @RequestBody UserDto userDto
     ) {
         UserEntity userEntity = userMapper.mapFrom(userDto);

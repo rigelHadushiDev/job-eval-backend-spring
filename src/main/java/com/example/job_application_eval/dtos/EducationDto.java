@@ -1,6 +1,8 @@
 package com.example.job_application_eval.dtos;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.enums.EducationLevel;
+import com.example.job_application_eval.validation.OnEditEducation;
+import com.example.job_application_eval.validation.OnEditUser;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +22,7 @@ import java.util.Date;
 @Builder
 public class EducationDto {
 
+    @NotNull(groups = {OnEditEducation.class}, message=  "Education Id is required")
     private Long educationId;
 
     @NotNull(message = "Education level is required")
@@ -36,4 +39,5 @@ public class EducationDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date graduationDate;
 
+    private String achievementsDescription;
 }

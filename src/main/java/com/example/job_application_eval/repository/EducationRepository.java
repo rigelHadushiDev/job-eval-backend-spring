@@ -13,6 +13,8 @@ public interface EducationRepository extends JpaRepository<EducationEntity, Long
 
     List<EducationEntity> findByUser_UserId(Long userId);
 
-    EducationEntity findByEducationId(Long educationId);
+    Optional<EducationEntity> findByEducationId(Long educationId);
+
+    EducationEntity save(EducationEntity educationEntity);
 
 }

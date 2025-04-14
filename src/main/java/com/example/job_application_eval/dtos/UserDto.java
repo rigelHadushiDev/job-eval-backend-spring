@@ -4,6 +4,7 @@ package com.example.job_application_eval.dtos;
 import com.example.job_application_eval.entities.enums.Gender;
 import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.validation.OnCreateUser;
+import com.example.job_application_eval.validation.OnEditUser;
 import com.example.job_application_eval.validation.OnSignUpUser;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
@@ -22,6 +23,7 @@ import java.util.Date;
 @Builder
 public class UserDto {
 
+    @NotNull(groups = {OnEditUser.class}, message ="First Name is required.")
     private Long userId;
 
     @NotBlank(groups = {OnSignUpUser.class, OnCreateUser.class}, message ="First Name is required.")

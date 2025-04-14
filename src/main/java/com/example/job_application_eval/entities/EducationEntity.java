@@ -40,6 +40,9 @@ public class EducationEntity {
     @Column(name = "graduation_date")
     private Date graduationDate;
 
+    @Column(name = "achievements_description")
+    private String achievementsDescription;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

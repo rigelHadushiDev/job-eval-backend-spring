@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity getCurrentUserEntity() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(email).orElseThrow(() ->
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "userNotFound"));
     }
 
