@@ -87,4 +87,6 @@ public class UserController {
         UserEntity updatedUser = userService.save(userEntity);
         return new ResponseEntity<>( userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
+
+    // add API find by username 
 }

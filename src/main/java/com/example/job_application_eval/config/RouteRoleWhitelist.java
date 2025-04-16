@@ -41,5 +41,13 @@ public class RouteRoleWhitelist {
         WHITELIST.put("POST:/workExp/create", List.of("USER"));
         WHITELIST.put("PUT:/workExp/edit", List.of("USER"));
 
+
+        // ProjectController routes
+        WHITELIST.put("DELETE:/project", List.of("USER"));
+        WHITELIST.put("GET:/project/userProjects", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("GET:/project/getProject", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("POST:/project/create", List.of("USER"));
+        WHITELIST.put("PUT:/project/edit", List.of("USER"));
+
     }
 }
