@@ -88,5 +88,9 @@ public class UserController {
         return new ResponseEntity<>( userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
 
-    // add API find by username 
+   @GetMapping("/getUser")
+   public ResponseEntity<UserDto> getUser(@RequestParam("username") String username) {
+       UserEntity userEntity = userService.getUserByUserName(username);
+       return new ResponseEntity<>(userMapper.mapTo(userEntity), HttpStatus.OK);
+   }
 }

@@ -8,17 +8,17 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "user_language")
+@Table(name = "applicant_language")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserLanguageEntity {
+public class ApplicantLanguageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_language_id")
-    private Long userLanguageId;
+    @Column(name="applicant_language_id")
+    private Long applicantLanguageId;
 
     @Column(nullable = false, name= "language_name")
     private String languageName;

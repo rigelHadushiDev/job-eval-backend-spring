@@ -23,6 +23,9 @@ public class ProjectEntity {
     @Column(name = "project_id")
     private Long projectId;
 
+    @Column(nullable = false, name = "project_title" )
+    private String projectTitle;
+
     @Column(nullable = false, name = "description" )
     private String description;
 

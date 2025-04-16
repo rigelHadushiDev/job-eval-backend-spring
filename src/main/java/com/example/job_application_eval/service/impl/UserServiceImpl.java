@@ -157,4 +157,9 @@ public class UserServiceImpl implements UserService {
         authService.sendVerificationEmail(user, rawTemporaryPassword);
         return userRepository.save(user);
     }
+
+    @Override
+    public UserEntity getUserByUserName(String username) {
+        return userRepository.findByUsername(username).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+    }
 }

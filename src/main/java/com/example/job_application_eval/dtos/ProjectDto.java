@@ -23,6 +23,9 @@ public class ProjectDto {
     @NotNull(groups = OnEditProject.class, message = "Project Id is required")
     private Long projectId;
 
+    @NotBlank(groups = {OnEditProject.class, Default.class}, message = "Project title can not be empty.")
+    private String projectTitle;
+
     @NotBlank(groups = {OnEditProject.class, Default.class}, message = "Project description can not be empty.")
     private String description;
 

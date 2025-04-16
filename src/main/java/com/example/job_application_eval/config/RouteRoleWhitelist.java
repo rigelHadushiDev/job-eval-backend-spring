@@ -19,6 +19,7 @@ public class RouteRoleWhitelist {
         WHITELIST.put("DELETE:/user/{userId}", List.of("ADMIN"));
         WHITELIST.put("GET:/user/searchUserFullName", List.of("ADMIN", "RECRUITER"));
         WHITELIST.put("POST:/user/create", List.of("ADMIN"));
+        WHITELIST.put("GET:/user/getUser", List.of("ADMIN", "RECRUITER"));
 
         // EducationController routes
         WHITELIST.put("DELETE:/education", List.of("USER"));
@@ -48,6 +49,13 @@ public class RouteRoleWhitelist {
         WHITELIST.put("GET:/project/getProject", List.of("USER", "RECRUITER", "ADMIN"));
         WHITELIST.put("POST:/project/create", List.of("USER"));
         WHITELIST.put("PUT:/project/edit", List.of("USER"));
+
+        // ProjectController routes
+        WHITELIST.put("DELETE:/applicantLanguage", List.of("USER"));
+        WHITELIST.put("GET:/applicantLanguage/getApplicantLanguages", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("GET:/applicantLanguage/getApplicantLanguage", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("POST:/applicantLanguage/create", List.of("USER"));
+        WHITELIST.put("PUT:/applicantLanguage/edit", List.of("USER"));
 
     }
 }
