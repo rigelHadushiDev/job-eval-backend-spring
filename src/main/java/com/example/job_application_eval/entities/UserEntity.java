@@ -60,13 +60,6 @@ public class UserEntity implements UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
 
-    @Column()
-    private String City;
-
-    @Column()
-
-    private String Country;
-
     @Column(name = "mobile_number")
     private String mobileNumber;
 

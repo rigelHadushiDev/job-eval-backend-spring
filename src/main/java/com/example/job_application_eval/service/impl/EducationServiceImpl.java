@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +40,6 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     public EducationEntity editEducation(EducationEntity educationEntity) {
-        checkFieldOfStudy(educationEntity);
 
         EducationEntity currentEducation =  educationRepository.findByEducationId(educationEntity.getEducationId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "educationNotFound"));
@@ -52,7 +50,7 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     public EducationEntity save(EducationEntity educationEntity) {
-        checkFieldOfStudy(educationEntity);
+
         UserEntity currentUser = utils.getCurrentUser();
         educationEntity.setUser(currentUser);
         return educationRepository.save(educationEntity);
@@ -71,16 +69,7 @@ public class EducationServiceImpl implements EducationService {
     }
 
 
-    public void checkFieldOfStudy(EducationEntity educationEntity) {
-        EducationLevel level = educationEntity.getEducationLevel();
-        if (level != EducationLevel.PRIMARY &&
-                level != EducationLevel.SECONDARY &&
-                level != EducationLevel.HIGH_SCHOOL &&
-                (educationEntity.getFieldOfStudy() == null || educationEntity.getFieldOfStudy().isBlank())) {
 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fieldOfStudyRequiredForHigherEducation");
-        }
-    }
 
 
 }

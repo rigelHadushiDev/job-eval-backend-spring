@@ -51,11 +51,10 @@ public class RouteRoleWhitelist {
         WHITELIST.put("PUT:/project/edit", List.of("USER"));
 
         // ProjectController routes
-        WHITELIST.put("DELETE:/applicantLanguage", List.of("USER"));
-        WHITELIST.put("GET:/applicantLanguage/getApplicantLanguages", List.of("USER", "RECRUITER", "ADMIN"));
-        WHITELIST.put("GET:/applicantLanguage/getApplicantLanguage", List.of("USER", "RECRUITER", "ADMIN"));
-        WHITELIST.put("POST:/applicantLanguage/create", List.of("USER"));
-        WHITELIST.put("PUT:/applicantLanguage/edit", List.of("USER"));
+        WHITELIST.put("DELETE:/applicantEnglishLevel", List.of("USER"));
+        WHITELIST.put("GET:/applicantEnglishLevel/getApplicantEnglishLevel", List.of("USER", "RECRUITER", "ADMIN"));
+        WHITELIST.put("POST:/applicantEnglishLevel/create", List.of("USER"));
+        WHITELIST.put("PUT:/applicantEnglishLevel/edit", List.of("USER"));
 
     }
 }

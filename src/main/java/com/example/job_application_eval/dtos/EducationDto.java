@@ -29,6 +29,7 @@ public class EducationDto {
     @NotNull(message = "Education level is required", groups = {Default.class, OnEditEducation.class})
     private EducationLevel educationLevel;
 
+    @NotBlank(message = "Field of study is required", groups = {Default.class, OnEditEducation.class})
     private String fieldOfStudy;
 
     @NotBlank(message = "Institution name is required", groups = {Default.class, OnEditEducation.class})

@@ -14,14 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApplicantLanguageDto {
+public class ApplicantEnglishLevelDto {
 
 
-    @NotNull(groups = OnEditLanguage.class, message = "User Language Id is required")
-    private Long applicantLanguageId;
-
-    @NotBlank(groups = {OnEditLanguage.class, Default.class}, message = "Language name can not be empty.")
-    private String languageName;
+    @NotNull(groups = OnEditLanguage.class, message = "Applicant English Level Id is required")
+    private Long applicantEnglishLevelId;
 
     @NotNull(groups = {OnEditLanguage.class, Default.class}, message = "ProficiencyL level can not be null.")
     private ProficiencyLevel proficiencyLevel;

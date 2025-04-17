@@ -6,15 +6,19 @@ import lombok.Getter;
 
 @Getter
 public enum ProficiencyLevel {
-    ELEMENTARY_PROFICIENCY("Elementary proficiency"),
-    LIMITED_WORKING_PROFICIENCY("Limited working proficiency"),
-    PROFESSIONAL_WORKING_PROFICIENCY("Professional working proficiency"),
-    FULL_PROFESSIONAL_PROFICIENCY("Full professional proficiency"),
-    NATIVE_OR_BILINGUAL_PROFICIENCY("Native or bilingual proficiency");
+    NONE(0, "None"),
+    A1(1, "A1"),
+    A2(2, "A2"),
+    B1(3, "B1"),
+    B2(4, "B2"),
+    C1(5, "C1"),
+    C2(1, "C2");
 
+    private final int code;
     private final String label;
 
-    ProficiencyLevel(String label) {
+    ProficiencyLevel(int code, String label) {
+        this.code = code;
         this.label = label;
     }
 
@@ -31,5 +35,14 @@ public enum ProficiencyLevel {
             }
         }
         throw new IllegalArgumentException("Unknown proficiency level: " + value);
+    }
+
+    public static ProficiencyLevel fromCode(int code) {
+        for (ProficiencyLevel level : ProficiencyLevel.values()) {
+            if (level.code == code) {
+                return level;
+            }
+        }
+        throw new IllegalArgumentException("Unknown proficiency code: " + code);
     }
 }
