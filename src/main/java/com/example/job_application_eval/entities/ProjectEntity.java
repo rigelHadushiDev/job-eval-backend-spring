@@ -26,7 +26,8 @@ public class ProjectEntity {
     @Column(nullable = false, name = "project_title" )
     private String projectTitle;
 
-    @Column(nullable = false, name = "description" )
+
+    @Column(nullable = false, name = "description",columnDefinition = "TEXT" )
     private String description;
 
     @Column(nullable = false, name= "link")

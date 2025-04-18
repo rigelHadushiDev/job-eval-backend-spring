@@ -51,7 +51,7 @@ public class WorkExperienceEntity {
     @Column(name = "finished")
     private Boolean finished;
 
-    @Column
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "total_years")

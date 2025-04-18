@@ -1,4 +1,5 @@
 package com.example.job_application_eval.config.filters;
+import com.example.job_application_eval.config.PublicRouteChecker;
 import com.example.job_application_eval.config.RouteRoleWhitelist;
 import com.example.job_application_eval.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -32,7 +33,7 @@ public class RoleAuthorizationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        if (path.startsWith("/auth")) {
+        if (PublicRouteChecker.isPublic(path)) {
             filterChain.doFilter(request, response);
             return;
         }

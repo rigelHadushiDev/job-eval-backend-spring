@@ -8,13 +8,13 @@ public interface JobPostingService {
 
     JobPostingEntity save(JobPostingEntity jobPostingEntity);
 
-    JobPostingEntity findById(long jobPostingId);
+    JobPostingEntity findById(Long jobPostingId);
 
-    Page<JobPostingEntity> findAll(Pageable pageable, Boolean closed);
+    Page<JobPostingEntity> findAllJobPostings(Boolean closed, Pageable pageable);
 
     JobPostingEntity edit(JobPostingEntity jobPostingEntity);
 
-    JobPostingEntity delete(long jobPostingId);
+    JobPostingEntity delete(Long jobPostingId);
 
-    Page<JobPostingEntity> findByJobTitle(String jobTitle, Pageable pageable);
+    Page<JobPostingEntity> searchByJobTitle(String title, Pageable pageable);
 }

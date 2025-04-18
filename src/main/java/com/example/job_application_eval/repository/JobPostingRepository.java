@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface JobPostingRepository extends JpaRepository<JobPostingEntity, Long> {
 
 
-    Page<JobPostingEntity> findByJobTitleContainingIgnoreCase(String jobTitle, Pageable pageable);
-
+    Page<JobPostingEntity> findByJobTitleContainingIgnoreCase(String title, Pageable pageable);
+    Page<JobPostingEntity> findByClosed(Boolean closed, Pageable pageable);
 }

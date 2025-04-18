@@ -1,9 +1,6 @@
 package com.example.job_application_eval.service.impl;
 
-
 import com.example.job_application_eval.dtos.LoginUserDto;
-import com.example.job_application_eval.dtos.RegisterUserDto;
-import com.example.job_application_eval.dtos.UserDto;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.repository.UserRepository;
@@ -150,7 +147,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 + "</html>";
 
         try {
-            emailServiceImpl.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
+            emailServiceImpl.sendEmail(user.getEmail(), subject, htmlMessage);
         } catch (MessagingException e) {
             e.printStackTrace();
         }

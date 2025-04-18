@@ -33,7 +33,7 @@ public class JobPostingEntity {
     @Column(name = "job_title", nullable = false)
     private String jobTitle;
 
-    @Column(name = "job_description", nullable = false)
+    @Column(name = "job_description",columnDefinition = "TEXT", nullable = false)
     private String jobDescription;
 
     @Convert(converter = ProficiencyLevelConverter.class)
@@ -48,15 +48,21 @@ public class JobPostingEntity {
     private Integer requiredExperienceYears;
 
     @Column(name = "required_skills", nullable = false)
-    private Integer requiredSkills;
+    private String requiredSkills;
 
     @Column(name = "closed", nullable = false)
     private boolean closed = false;
 
-    @Column(name = "opened_at", nullable = false, updatable = false)
+    @Column(name = "opened_at", updatable = false)
     private LocalDateTime openedAt = LocalDateTime.now();
 
-    @Column(name = "closedAt", nullable = false)
+    @Column(name = "closedAt")
     private LocalDateTime closedAt;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.openedAt == null) {
+            this.openedAt = LocalDateTime.now();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.example.job_application_eval.entities.enums.EducationLevel;
 import com.example.job_application_eval.entities.enums.EmploymentType;
 import com.example.job_application_eval.entities.enums.ProficiencyLevel;
 import com.example.job_application_eval.validation.OnJobPostingEdit;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 
@@ -44,13 +45,16 @@ public class JobPostingDto {
     @Min(value = 0, message = "Experience years must be zero or positive.")
     private Integer requiredExperienceYears;
 
-    @NotNull(groups = {OnJobPostingEdit.class, Default.class},message = "Required skills count is required.")
-    @Min(value = 0, message = "Skills count must be zero or positive.")
-    private Integer requiredSkills;
+    @NotBlank(groups = {OnJobPostingEdit.class, Default.class},message = "Required skills is required.")
+    private String requiredSkills;
 
+    @NotNull(groups = {OnJobPostingEdit.class},message = "Closed flag is required.")
     private boolean closed;
 
+    @NotNull(groups = {OnJobPostingEdit.class}, message = "Required skills count is required.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd' 'HH:mm:ss")
     private LocalDateTime openedAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd' 'HH:mm:ss")
     private LocalDateTime closedAt;
 }

@@ -3,6 +3,7 @@ package com.example.job_application_eval.service.impl;
 
 import com.example.job_application_eval.config.utils.Utils;
 import com.example.job_application_eval.entities.JobPostingEntity;
+import com.example.job_application_eval.entities.ProjectEntity;
 import com.example.job_application_eval.repository.JobPostingRepository;
 import com.example.job_application_eval.service.JobPostingService;
 import lombok.RequiredArgsConstructor;
@@ -26,28 +27,44 @@ public class JobPostingServiceImpl  implements JobPostingService {
     }
 
     @Override
-    public JobPostingEntity findById(long jobPostingId) {
+    public JobPostingEntity findById(Long jobPostingId) {
         return jobPostingRepository.findById(jobPostingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Posting not found"));
     }
 
     @Override
-    public Page<JobPostingEntity> findAll(Pageable pageable, Boolean closed) {
-        return null;
+    public Page<JobPostingEntity> findAllJobPostings(Boolean closed, Pageable pageable) {
+        Page<JobPostingEntity> jobEntities;
+
+        if (closed == null) {
+            jobEntities = jobPostingRepository.findAll(pageable);
+        } else {
+            jobEntities = jobPostingRepository.findByClosed(closed, pageable);
+        }
+
+        return jobEntities;
     }
+
+
+
+    @Override
+    public Page<JobPostingEntity> searchByJobTitle(String title, Pageable pageable) {
+        return jobPostingRepository.findByJobTitleContainingIgnoreCase(title, pageable);
+    }
+
 
     @Override
     public JobPostingEntity edit(JobPostingEntity jobPostingEntity) {
-        return null;
+        findById(jobPostingEntity.getJobPostingId());
+        return jobPostingRepository.save(jobPostingEntity);
     }
 
     @Override
-    public JobPostingEntity delete(long jobPostingId) {
-        return null;
+    public JobPostingEntity delete(Long jobPostingId) {
+        JobPostingEntity deletedJobPosting = findById(jobPostingId);
+        jobPostingRepository.deleteById(jobPostingId);
+        return deletedJobPosting;
     }
 
-    @Override
-    public Page<JobPostingEntity> findByJobTitle(String jobTitle, Pageable pageable) {
-        return null;
-    }
+
 }

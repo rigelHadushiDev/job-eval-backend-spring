@@ -37,4 +37,13 @@ public class JobApplicationEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ApplicationStatus status = ApplicationStatus.PENDING;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.applicationDate == null) {
+            this.applicationDate = LocalDateTime.now();
+        }
+    }
+
+
 }
