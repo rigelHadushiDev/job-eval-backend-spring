@@ -4,6 +4,7 @@ import com.example.job_application_eval.entities.enums.EducationLevel;
 import com.example.job_application_eval.entities.enums.EmploymentType;
 import com.example.job_application_eval.entities.enums.ProficiencyLevel;
 import com.example.job_application_eval.validation.OnJobPostingEdit;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 
 import jakarta.validation.groups.Default;
@@ -11,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @Data
@@ -45,5 +48,9 @@ public class JobPostingDto {
     @Min(value = 0, message = "Skills count must be zero or positive.")
     private Integer requiredSkills;
 
-    private Long userId;
+    private boolean closed;
+
+    private LocalDateTime openedAt;
+
+    private LocalDateTime closedAt;
 }

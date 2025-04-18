@@ -10,11 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
@@ -53,7 +50,6 @@ public class JobPostingEntity {
     @Column(name = "required_skills", nullable = false)
     private Integer requiredSkills;
 
-    // need to be added in the Dto
     @Column(name = "closed", nullable = false)
     private boolean closed = false;
 
@@ -63,13 +59,4 @@ public class JobPostingEntity {
     @Column(name = "closedAt", nullable = false)
     private LocalDateTime closedAt;
 
-   // also it should be added createdBy, modified by
-
-
-    // need to be added in the Dto
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private UserEntity user;
 }
