@@ -28,7 +28,7 @@ public class EducationEntity {
     @Column(name = "education_level", nullable = false)
     private EducationLevel educationLevel;
 
-    @Column( name= "field_of_study")
+    @Column( name= "field_of_study", nullable = false)
     private String fieldOfStudy;
 
     @Column(nullable = false)

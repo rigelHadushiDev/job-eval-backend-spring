@@ -87,4 +87,10 @@ public class UserController {
         UserEntity updatedUser = userService.save(userEntity);
         return new ResponseEntity<>( userMapper.mapTo(updatedUser), HttpStatus.OK);
     }
+
+   @GetMapping("/getUser")
+   public ResponseEntity<UserDto> getUser(@RequestParam("username") String username) {
+       UserEntity userEntity = userService.getUserByUserName(username);
+       return new ResponseEntity<>(userMapper.mapTo(userEntity), HttpStatus.OK);
+   }
 }

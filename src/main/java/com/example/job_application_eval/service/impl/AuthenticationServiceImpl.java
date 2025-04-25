@@ -1,9 +1,6 @@
 package com.example.job_application_eval.service.impl;
 
-
 import com.example.job_application_eval.dtos.LoginUserDto;
-import com.example.job_application_eval.dtos.RegisterUserDto;
-import com.example.job_application_eval.dtos.UserDto;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.repository.UserRepository;
@@ -133,9 +130,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
                 + "<h2 style=\"color: #333;\">Welcome to Our Platform</h2>"
                 + "<p style=\"font-size: 16px;\">Dear " + fullName + ",</p>"
-                + "<p style=\"font-size: 16px;\">Your account has been successfully created. Please find your temporary password below:</p>"
+                + "<p style=\"font-size: 16px;\">Your account has been successfully created. Please find your credentials below:</p>"
                 + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; "
                 + "box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px;\">"
+                + "<p style=\"font-size: 16px;\"><strong>Username:</strong> "
+                + "<span style=\"font-weight: bold; color: #333;\">" + user.getUsername() + "</span></p>"
                 + "<p style=\"font-size: 16px;\"><strong>Temporary Password:</strong> "
                 + "<span style=\"font-weight: bold; color: #007bff;\">" + rawVerificationCode + "</span></p>"
                 + "</div>"
@@ -148,11 +147,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 + "</html>";
 
         try {
-            emailServiceImpl.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
+            emailServiceImpl.sendEmail(user.getEmail(), subject, htmlMessage);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
+
+
 
     public String generateTemporaryPassword() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";

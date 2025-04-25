@@ -31,6 +31,9 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/jobPosting/all").permitAll()
+                        .requestMatchers("/jobPosting/getJobPosting").permitAll()
+                        .requestMatchers("/jobPosting/searchByJobTitle").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

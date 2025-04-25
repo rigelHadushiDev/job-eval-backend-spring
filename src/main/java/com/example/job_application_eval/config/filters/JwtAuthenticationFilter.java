@@ -1,5 +1,6 @@
 package com.example.job_application_eval.config.filters;
 
+import com.example.job_application_eval.config.PublicRouteChecker;
 import com.example.job_application_eval.service.impl.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,11 +36,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String path = request.getServletPath();
+
+        if (PublicRouteChecker.isPublic(path)) {
             filterChain.doFilter(request, response);
             return;
         }
-
+        
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
         try {
             final String jwt = authHeader.substring(7);
             final String userEmail = jwtServiceImpl.extractUsername(jwt);

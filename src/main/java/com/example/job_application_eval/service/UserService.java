@@ -27,4 +27,6 @@ public interface UserService {
     Page<UserEntity> searchUsersByFullName(String fullName, Pageable pageable);
 
     UserEntity save(UserEntity userEntity);
+
+    UserEntity getUserByUserName(String username);
 }

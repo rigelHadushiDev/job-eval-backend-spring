@@ -30,4 +30,5 @@ public class SkillDto {
     @NotNull(groups = {OnEditSkills.class, Default.class}, message = "Skill Proficiency is required")
     private Integer skillProficiency;
 
+    private Long userId;
 }

@@ -49,8 +49,6 @@ public class UserDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date birthdate;
 
-    private String city;
-    private String country;
     private String mobileNumber;
     private String fullName;
 }

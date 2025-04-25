@@ -1,5 +1,6 @@
 package com.example.job_application_eval.service.impl;
 
+import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,6 +28,7 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -44,6 +46,10 @@ public class JwtServiceImpl implements JwtService {
                 .orElse("USER");
 
         claims.put("role", role);
+
+        if (userDetails instanceof UserEntity userEntity) {
+            claims.put("userId", userEntity.getUserId());
+        }
 
         return generateToken(claims, userDetails);
     }

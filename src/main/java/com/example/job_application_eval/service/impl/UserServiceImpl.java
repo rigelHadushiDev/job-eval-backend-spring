@@ -106,8 +106,6 @@ public class UserServiceImpl implements UserService {
         Optional.ofNullable(userEntity.getUsername()).ifPresent(currentUser::setUsername);
         Optional.ofNullable(userEntity.getGender()).ifPresent(currentUser::setGender);
         Optional.ofNullable(userEntity.getBirthdate()).ifPresent(currentUser::setBirthdate);
-        Optional.ofNullable(userEntity.getCity()).ifPresent(currentUser::setCity);
-        Optional.ofNullable(userEntity.getCountry()).ifPresent(currentUser::setCountry);
         Optional.ofNullable(userEntity.getMobileNumber()).ifPresent(currentUser::setMobileNumber);
         Optional.ofNullable(userEntity.getFullName()).ifPresent(currentUser::setFullName);
 
@@ -156,5 +154,10 @@ public class UserServiceImpl implements UserService {
 
         authService.sendVerificationEmail(user, rawTemporaryPassword);
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity getUserByUserName(String username) {
+        return userRepository.findByUsername(username).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
     }
 }
