@@ -67,7 +67,7 @@ public class RouteRoleWhitelist {
         WHITELIST.put("POST:/jobApplication/apply", List.of("USER"));
         WHITELIST.put("GET:/jobApplication/getByUserId", List.of("ADMIN", "RECRUITER", "USER"));
         WHITELIST.put("GET:/jobApplication/getByStatus", List.of("ADMIN", "RECRUITER"));
-        WHITELIST.put("GET:/jobApplication/getJByJobPostingId", List.of("ADMIN", "RECRUITER"));
+        WHITELIST.put("GET:/jobApplication/getByJobPostingId", List.of("ADMIN", "RECRUITER"));
         WHITELIST.put("GET:/jobApplication/getByJobPostingIdAndStatus", List.of("ADMIN", "RECRUITER"));
         WHITELIST.put("PATCH:/jobApplication/changeStatus", List.of("ADMIN", "RECRUITER"));
     }

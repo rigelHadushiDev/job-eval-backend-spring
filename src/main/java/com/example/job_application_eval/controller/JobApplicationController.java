@@ -27,8 +27,8 @@ public class JobApplicationController {
 
     // ADMIN, Recruiter, USER
     @GetMapping("getByUserId")
-    public Page<JobApplicationDto> getJobApplicationsByUserId(Pageable pageable) {
-        return jobApplicationService.getJobApplicationsByUserId(pageable)
+    public Page<JobApplicationDto> getJobApplicationsByUserId(@RequestParam("userId") Long userId, Pageable pageable) {
+        return jobApplicationService.getJobApplicationsByUserId(userId, pageable)
                 .map(mapper::mapTo);
     }
 
@@ -40,7 +40,7 @@ public class JobApplicationController {
     }
 
     // ADMIN, Recruiter
-    @GetMapping("getJByJobPostingId")
+    @GetMapping("getByJobPostingId")
     public Page<JobApplicationDto> getJobApplicationsByJobPostingId(@RequestParam("jobPostingId") Long jobPostingId, Pageable pageable) {
         return jobApplicationService.getJobApplicationsByJobPostingId(jobPostingId, pageable)
                 .map(mapper::mapTo);
@@ -57,7 +57,7 @@ public class JobApplicationController {
 
     // ADMIN, Recruiter
     @PatchMapping("changeStatus")
-    public JobApplicationDto changeStatus(@RequestParam("jobApplicationId") Long jobApplicationId, ApplicationStatus status) {
+    public JobApplicationDto changeStatus(@RequestParam("jobApplicationId") Long jobApplicationId,@RequestParam("status") ApplicationStatus status) {
         JobApplicationEntity jobApplicationEntity = jobApplicationService.changeStatus(jobApplicationId, status);
         return mapper.mapTo(jobApplicationEntity);
     }

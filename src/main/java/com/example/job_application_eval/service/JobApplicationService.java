@@ -20,7 +20,7 @@ public interface JobApplicationService {
             Long jobPostingId,
             Pageable pageable
     );
-    Page<JobApplicationEntity> getJobApplicationsByUserId(Pageable pageable);
+    Page<JobApplicationEntity> getJobApplicationsByUserId(Long userId, Pageable pageable);
 
 
     JobApplicationEntity getByJobApplicationId(Long jobApplicationId);

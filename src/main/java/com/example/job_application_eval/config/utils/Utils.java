@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Component
@@ -58,10 +59,11 @@ public class Utils {
         }
 
         LocalDate effectiveEndDate = isFinished ? endDate : today;
-        Period period = Period.between(startDate, effectiveEndDate);
 
-        double years = period.getYears() + (period.getMonths() / 12.0) + (period.getDays() / 365.0);
+        long totalDays = ChronoUnit.DAYS.between(startDate, effectiveEndDate);
+        double years = totalDays / 365.25;
         double roundedYears = Math.round(years * 10.0) / 10.0;
+
         workExp.setTotalYears(roundedYears);
     }
 

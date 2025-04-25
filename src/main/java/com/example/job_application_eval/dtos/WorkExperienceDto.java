@@ -43,4 +43,6 @@ public class WorkExperienceDto {
     private Double totalYears;
 
     private Long userId;
+
+    private Boolean finished;
 }

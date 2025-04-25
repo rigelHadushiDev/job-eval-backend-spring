@@ -5,6 +5,7 @@ import com.example.job_application_eval.entities.JobApplicationEntity;
 import com.example.job_application_eval.entities.JobPostingEntity;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.enums.ApplicationStatus;
+import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.repository.JobApplicationRepository;
 import com.example.job_application_eval.service.EmailService;
 import com.example.job_application_eval.service.JobApplicationService;
@@ -27,8 +28,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final EmailService emailService;
 
     @Override
-    public Page<JobApplicationEntity> getJobApplicationsByUserId(Pageable pageable) {
-        Long userId = utils.getCurrentUserId();
+    public Page<JobApplicationEntity> getJobApplicationsByUserId(Long userId, Pageable pageable) {
+
+        UserEntity userEntity = utils.getCurrentUser();
+        if (userEntity.getRole() == Role.USER) {
+            utils.assertCurrentUserOwns(userId);
+        }
         return jobApplicationRepository.findByUser_UserId(userId, pageable);
     }
 
