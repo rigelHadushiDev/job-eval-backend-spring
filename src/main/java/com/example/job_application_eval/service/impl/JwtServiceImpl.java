@@ -35,6 +35,7 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
+
     @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
