@@ -2,16 +2,11 @@ package com.example.job_application_eval.controller;
 
 
 import com.example.job_application_eval.dtos.LoginUserDto;
-import com.example.job_application_eval.dtos.RegisterUserDto;
 import com.example.job_application_eval.dtos.UserDto;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.responses.LogInResponse;
 import com.example.job_application_eval.service.AuthenticationService;
-import com.example.job_application_eval.service.JwtService;
-import com.example.job_application_eval.service.impl.JwtServiceImpl;
-import com.example.job_application_eval.service.impl.AuthenticationServiceImpl;
-import com.example.job_application_eval.validation.OnCreateUser;
 import com.example.job_application_eval.validation.OnSignUpUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
