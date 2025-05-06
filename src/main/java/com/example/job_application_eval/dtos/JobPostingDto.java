@@ -38,8 +38,6 @@ public class JobPostingDto {
     @NotNull(groups = {OnJobPostingEdit.class, Default.class},message = "Required English level is required.")
     private ProficiencyLevel requiredEnglishLevel;
 
-    @NotNull(groups = {OnJobPostingEdit.class, Default.class},message = "Required education level is required.")
-    private EducationLevel requiredEducationLevel;
 
     @NotNull(groups = {OnJobPostingEdit.class, Default.class},message = "Required years of experience is required.")
     @Min(value = 0, message = "Experience years must be zero or positive.")

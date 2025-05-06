@@ -13,7 +13,6 @@ public class JobPostingFastApiDto {
         private String jobPostingId;
         private String jobPostingTitle;
         private String jobPostingDesc;
-        private String requiredEducationLevel;
         private String requiredEnglishLevel;
         private Float requiredExperienceYears;
         private String requiredSkills;

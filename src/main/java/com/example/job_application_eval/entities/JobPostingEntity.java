@@ -40,10 +40,6 @@ public class JobPostingEntity {
     @Column(name = "required_english_level", nullable = false)
     private ProficiencyLevel requiredEnglishLevel;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "required_education_level", nullable = false)
-    private EducationLevel requiredEducationLevel;
-
     @Column(name = "required_experience_years", nullable = false)
     private Integer requiredExperienceYears;
 

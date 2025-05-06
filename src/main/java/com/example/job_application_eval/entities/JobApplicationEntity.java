@@ -27,6 +27,9 @@ public class JobApplicationEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @Column(name = "username", nullable = false)
+    private String username;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_posting_id", nullable = false)
     private JobPostingEntity jobPosting;
@@ -38,12 +41,31 @@ public class JobApplicationEntity {
     @Column(name = "status", nullable = false)
     private ApplicationStatus status = ApplicationStatus.PENDING;
 
+    @Column(name = "general_score")
+    private Double generalScore;
+
+    @Column(name = "education_score")
+    private Double educationScore;
+
+    @Column(name = "english_score")
+    private Double englishScore;
+
+    @Column(name = "skills_score")
+    private Double skillsScore;
+
+    @Column(name = "experience_years_score")
+    private Double experienceYearsScore;
+
+    @Column(name =  "experience_similarity_score")
+    private Double experienceSimilarityScore;
+
     @PrePersist
     public void prePersist() {
         if (this.applicationDate == null) {
             this.applicationDate = LocalDateTime.now();
         }
+        if (user != null) {
+            this.username = user.getUsername();
+        }
     }
-
-
 }

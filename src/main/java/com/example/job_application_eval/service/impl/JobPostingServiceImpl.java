@@ -33,7 +33,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
 
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.POST, jobPostingDto);
+                    fastApiUrl, HttpMethod.POST, jobPostingDto, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveJobPostingFailed");
@@ -80,7 +80,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
         JobPostingFastApiDto jobPostingDTO = getJobPostingFastApiDto(edited);
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.PUT, jobPostingDTO);
+                    fastApiUrl, HttpMethod.PUT, jobPostingDTO, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editJobPostingFailed");
@@ -100,7 +100,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
 
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.DELETE, null);
+                    fastApiUrl, HttpMethod.DELETE, null, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteJobPostingFailed");
@@ -116,7 +116,6 @@ public class JobPostingServiceImpl  implements JobPostingService {
         dto.setJobPostingId(String.valueOf(entity.getJobPostingId().intValue()));
         dto.setJobPostingTitle(entity.getJobTitle());
         dto.setJobPostingDesc(entity.getJobDescription());
-        dto.setRequiredEducationLevel(entity.getRequiredEducationLevel().name());
         dto.setRequiredEnglishLevel(entity.getRequiredEnglishLevel().name());
         dto.setRequiredExperienceYears(entity.getRequiredExperienceYears().floatValue());
         dto.setRequiredSkills(entity.getRequiredSkills());

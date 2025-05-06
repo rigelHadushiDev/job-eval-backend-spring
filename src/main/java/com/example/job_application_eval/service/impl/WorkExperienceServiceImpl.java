@@ -46,7 +46,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.DELETE, null);
+                    fastApiUrl, HttpMethod.DELETE, null, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteWorkExperienceFailed");
@@ -80,7 +80,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         WorkExperienceFastAPIDto workExperienceDTO = getWorkExperienceFastAPIDto(edited);
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.PUT, workExperienceDTO);
+                    fastApiUrl, HttpMethod.PUT, workExperienceDTO, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editWorkExperienceFailed");
@@ -103,7 +103,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.POST, workExperienceDTO);
+                    fastApiUrl, HttpMethod.POST, workExperienceDTO, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveWorkExperienceFailed");

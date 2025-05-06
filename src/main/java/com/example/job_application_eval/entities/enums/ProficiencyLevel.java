@@ -12,7 +12,7 @@ public enum ProficiencyLevel {
     B1(3, "B1"),
     B2(4, "B2"),
     C1(5, "C1"),
-    C2(1, "C2");
+    C2(6, "C2");
 
     private final int code;
     private final String label;

@@ -5,5 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface FastApiRequestService {
 
-     ResponseEntity<String> sendRequest(String url, HttpMethod httpMethod, Object payload);
+     <T> ResponseEntity<T> sendRequest(String url, HttpMethod httpMethod, Object payload, Class<T> responseType);
 }
