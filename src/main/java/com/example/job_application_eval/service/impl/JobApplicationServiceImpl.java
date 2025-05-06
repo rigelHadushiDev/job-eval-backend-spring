@@ -52,7 +52,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 userEntity.getUserId(), jobPostingId
         );
 
-
         if(previousApplication != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already applied for this job");
         }
