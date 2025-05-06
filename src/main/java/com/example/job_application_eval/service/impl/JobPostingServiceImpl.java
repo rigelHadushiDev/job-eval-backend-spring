@@ -2,16 +2,18 @@ package com.example.job_application_eval.service.impl;
 
 
 import com.example.job_application_eval.config.utils.Utils;
+import com.example.job_application_eval.dtos.JobPostingFastApiDto;
 import com.example.job_application_eval.entities.JobPostingEntity;
-import com.example.job_application_eval.entities.ProjectEntity;
 import com.example.job_application_eval.repository.JobPostingRepository;
+import com.example.job_application_eval.service.FastApiRequestService;
 import com.example.job_application_eval.service.JobPostingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -20,10 +22,26 @@ public class JobPostingServiceImpl  implements JobPostingService {
 
     private final Utils utils;
     private final JobPostingRepository jobPostingRepository;
+    private final FastApiRequestService fastApiRequestService;
 
     @Override
     public JobPostingEntity save(JobPostingEntity jobPostingEntity) {
-        return jobPostingRepository.save(jobPostingEntity);
+        JobPostingEntity savedJobPosting = jobPostingRepository.save(jobPostingEntity);
+
+        String fastApiUrl = "http://localhost:8000/job-posting/";
+        JobPostingFastApiDto jobPostingDto = getJobPostingFastApiDto(savedJobPosting);
+
+        try {
+            ResponseEntity<String> response = fastApiRequestService.sendRequest(
+                    fastApiUrl, HttpMethod.POST, jobPostingDto, String.class);
+
+            if (response.getStatusCode() != HttpStatus.OK) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveJobPostingFailed");
+            }
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveJobPostingFailed");
+        }
+        return savedJobPosting;
     }
 
     @Override
@@ -56,15 +74,51 @@ public class JobPostingServiceImpl  implements JobPostingService {
     @Override
     public JobPostingEntity edit(JobPostingEntity jobPostingEntity) {
         findById(jobPostingEntity.getJobPostingId());
-        return jobPostingRepository.save(jobPostingEntity);
+
+        JobPostingEntity edited = jobPostingRepository.save(jobPostingEntity);
+        String fastApiUrl = "http://localhost:8000/editJobPosting/";
+        JobPostingFastApiDto jobPostingDTO = getJobPostingFastApiDto(edited);
+        try {
+            ResponseEntity<String> response = fastApiRequestService.sendRequest(
+                    fastApiUrl, HttpMethod.PUT, jobPostingDTO, String.class);
+
+            if (response.getStatusCode() != HttpStatus.OK) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editJobPostingFailed");
+            }
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editJobPostingFailed");
+        }
+        return edited;
     }
 
     @Override
     public JobPostingEntity delete(Long jobPostingId) {
         JobPostingEntity deletedJobPosting = findById(jobPostingId);
         jobPostingRepository.deleteById(jobPostingId);
+
+        String fastApiUrl = "http://localhost:8000/deleteJobPosting/" + jobPostingId;
+
+        try {
+            ResponseEntity<String> response = fastApiRequestService.sendRequest(
+                    fastApiUrl, HttpMethod.DELETE, null, String.class);
+
+            if (response.getStatusCode() != HttpStatus.OK) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteJobPostingFailed");
+            }
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteJobPostingFailed");
+        }
         return deletedJobPosting;
     }
 
-
+    private static JobPostingFastApiDto getJobPostingFastApiDto(JobPostingEntity entity) {
+        JobPostingFastApiDto dto = new JobPostingFastApiDto();
+        dto.setJobPostingId(String.valueOf(entity.getJobPostingId().intValue()));
+        dto.setJobPostingTitle(entity.getJobTitle());
+        dto.setJobPostingDesc(entity.getJobDescription());
+        dto.setRequiredEnglishLevel(entity.getRequiredEnglishLevel().name());
+        dto.setRequiredExperienceYears(entity.getRequiredExperienceYears().floatValue());
+        dto.setRequiredSkills(entity.getRequiredSkills());
+        return dto;
+    }
 }

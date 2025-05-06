@@ -73,7 +73,7 @@ public class RoleAuthorizationFilter extends OncePerRequestFilter {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 username,
-                null,
+                token,
                 authorities
         );
 

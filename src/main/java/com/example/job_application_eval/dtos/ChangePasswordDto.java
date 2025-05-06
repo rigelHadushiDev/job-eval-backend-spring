@@ -14,4 +14,6 @@ public class ChangePasswordDto {
     @NotBlank(message = "New password is required")
     private String newPassword;
 
+
+
 }

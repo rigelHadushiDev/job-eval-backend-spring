@@ -1,22 +1,24 @@
 package com.example.job_application_eval.service.impl;
 
 import com.example.job_application_eval.config.utils.Utils;
-import com.example.job_application_eval.entities.JobApplicationEntity;
-import com.example.job_application_eval.entities.JobPostingEntity;
-import com.example.job_application_eval.entities.UserEntity;
+import com.example.job_application_eval.dtos.ApplicantDataRequestDto;
+import com.example.job_application_eval.dtos.ApplicantScoreResponseDto;
+import com.example.job_application_eval.entities.*;
 import com.example.job_application_eval.entities.enums.ApplicationStatus;
 import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.repository.JobApplicationRepository;
-import com.example.job_application_eval.service.EmailService;
-import com.example.job_application_eval.service.JobApplicationService;
-import com.example.job_application_eval.service.JobPostingService;
+import com.example.job_application_eval.service.*;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final JobPostingService jobPostingService;
     private final Utils utils;
     private final EmailService emailService;
+    private final EducationService educationService;
+    private final SkillService skillService;
+    private final ApplicantEnglishLevelService applicantEnglishLevelService;
+    private final FastApiRequestService fastApiRequestService;
 
     @Override
     public Page<JobApplicationEntity> getJobApplicationsByUserId(Long userId, Pageable pageable) {
@@ -39,15 +45,71 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public JobApplicationEntity apply(Long jobPostingId) {
-
-        JobPostingEntity jobPostingEntity  = jobPostingService.findById(jobPostingId);
+        JobPostingEntity jobPostingEntity = jobPostingService.findById(jobPostingId);
         UserEntity userEntity = utils.getCurrentUser();
+
+        JobApplicationEntity previousApplication = jobApplicationRepository.findByUser_UserIdAndJobPosting_JobPostingId(
+                userEntity.getUserId(), jobPostingId
+        );
+
+
+        if(previousApplication != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already applied for this job");
+        }
 
         JobApplicationEntity jobApplicationEntity = new JobApplicationEntity();
         jobApplicationEntity.setJobPosting(jobPostingEntity);
         jobApplicationEntity.setUser(userEntity);
+
+        ApplicantDataRequestDto applicantDataRequestDto = new ApplicantDataRequestDto();
+        applicantDataRequestDto.setUserId(userEntity.getUserId());
+        applicantDataRequestDto.setUsername(userEntity.getUsername());
+
+        List<EducationEntity> eduEntities = educationService.findEducationsByUserId(userEntity.getUserId());
+        List<ApplicantDataRequestDto.EducationLevelEntry> educationLevels = eduEntities.stream()
+                .map(edu -> new ApplicantDataRequestDto.EducationLevelEntry(edu.getEducationLevel()))
+                .toList();
+        applicantDataRequestDto.setEducationLevel(educationLevels);
+
+        ApplicantEnglishLevelEntity englishLevel = applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userEntity.getUserId());
+        applicantDataRequestDto.setEnglishLevel(englishLevel.getProficiencyLevel());
+
+        List<SkillEntity> skillEntities = skillService.findSkillsByUserId(userEntity.getUserId());
+        List<ApplicantDataRequestDto.SkillEntry> skills = skillEntities.stream()
+                .map(skill -> new ApplicantDataRequestDto.SkillEntry(skill.getSkillName(), skill.getSkillProficiency()))
+                .toList();
+        applicantDataRequestDto.setSkills(skills);
+
+        applicantDataRequestDto.setJobPostingId(jobPostingId);
+
+        String fastApiUrl = "http://localhost:8000/job-application/";
+
+        try{
+        ResponseEntity<ApplicantScoreResponseDto> response = fastApiRequestService.sendRequest(
+                fastApiUrl, HttpMethod.POST, applicantDataRequestDto, ApplicantScoreResponseDto.class
+        );
+
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
+        }
+
+            ApplicantScoreResponseDto score = response.getBody();
+            jobApplicationEntity.setGeneralScore(score.getFinalScore());
+            jobApplicationEntity.setEducationScore(score.getEducationScore());
+            jobApplicationEntity.setEnglishScore(score.getEnglishScore());
+            jobApplicationEntity.setSkillsScore(score.getSkillScore());
+            jobApplicationEntity.setExperienceYearsScore(score.getExperienceYearsScore());
+            jobApplicationEntity.setExperienceSimilarityScore(score.getExperienceSimilarityScore());
+
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
+        }
+
+
+
         return jobApplicationRepository.save(jobApplicationEntity);
     }
+
 
     @Override
     public JobApplicationEntity changeStatus(Long jobApplicationId, ApplicationStatus status) {
