@@ -26,7 +26,7 @@ public class FastApiRequestServiceImpl implements FastApiRequestService {
         headers.set("Authorization", "Bearer " + jwtToken);
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(payload, headers);
-
+System.out.println("Sending payload to FastAPI: " + payload);
         return restTemplate.exchange(
                 url, httpMethod, requestEntity, responseType
         );

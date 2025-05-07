@@ -49,15 +49,15 @@ public class WorkExperienceController {
 
 
     @PostMapping("create")
-    public ResponseEntity<WorkExperienceDto> createWorkExperience(@Valid  @RequestBody WorkExperienceDto WorkExperienceDto) {
-        WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(WorkExperienceDto);
+    public ResponseEntity<WorkExperienceDto> createWorkExperience(@Valid  @RequestBody WorkExperienceDto workExperienceDto) {
+        WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(workExperienceDto);
         WorkExperienceEntity updatedWorkExperience = workExperienceService.save(WorkExperienceEntity);
         return new ResponseEntity<>(mapper.mapTo(updatedWorkExperience), HttpStatus.OK);
     }
 
     @PutMapping("edit")
-    public ResponseEntity<WorkExperienceDto> editWorkExperience(@Validated(OnEditWorkExp.class) @RequestBody WorkExperienceDto WorkExperienceDto) {
-        WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(WorkExperienceDto);
+    public ResponseEntity<WorkExperienceDto> editWorkExperience(@Validated(OnEditWorkExp.class) @RequestBody WorkExperienceDto workExperienceDto) {
+        WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(workExperienceDto);
         WorkExperienceEntity updatedWorkExperience = workExperienceService.editWorkExperience(WorkExperienceEntity);
         return new ResponseEntity<>(mapper.mapTo(updatedWorkExperience), HttpStatus.OK);
     }

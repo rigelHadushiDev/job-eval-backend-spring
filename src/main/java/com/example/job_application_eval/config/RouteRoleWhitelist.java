@@ -65,10 +65,9 @@ public class RouteRoleWhitelist {
 
         // JobApplicationController routes
         WHITELIST.put("POST:/jobApplication/apply", List.of("USER"));
-        WHITELIST.put("GET:/jobApplication/getByUserId", List.of("ADMIN", "RECRUITER", "USER"));
-        WHITELIST.put("GET:/jobApplication/getByStatus", List.of("ADMIN", "RECRUITER"));
-        WHITELIST.put("GET:/jobApplication/getByJobPostingId", List.of("ADMIN", "RECRUITER"));
-        WHITELIST.put("GET:/jobApplication/getByJobPostingIdAndStatus", List.of("ADMIN", "RECRUITER"));
+        WHITELIST.put("GET:/jobApplication/anyApplicationFilter", List.of("ADMIN", "RECRUITER"));
+        WHITELIST.put("GET:/jobApplication/myApplicationFilter", List.of("USER"));
         WHITELIST.put("PATCH:/jobApplication/changeStatus", List.of("ADMIN", "RECRUITER"));
+        
     }
 }

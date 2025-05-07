@@ -5,22 +5,21 @@ import com.example.job_application_eval.entities.enums.ApplicationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+
 public interface JobApplicationService {
+
+
 
     JobApplicationEntity apply(Long jobPostingId);
 
     JobApplicationEntity changeStatus(Long jobApplicationId, ApplicationStatus status);
 
-    Page<JobApplicationEntity> getJobApplicationsByStatus(ApplicationStatus status, Pageable pageable);
+    Page<JobApplicationEntity> filterMyJobApplications(ApplicationStatus status, Long jobPostingId,
+                                                      LocalDateTime applicationDate, String sortBy, String orderType, Pageable pageable);
 
-    Page<JobApplicationEntity> getJobApplicationsByJobPostingId(Long jobPostingId, Pageable pageable);
-
-    Page<JobApplicationEntity> getByStatusAndJobPostingId(
-            ApplicationStatus status,
-            Long jobPostingId,
-            Pageable pageable
-    );
-    Page<JobApplicationEntity> getJobApplicationsByUserId(Long userId, Pageable pageable);
+    Page<JobApplicationEntity> filterAnyJobApplications(Long userId, ApplicationStatus status, Long jobPostingId,
+                                                     LocalDateTime applicationDate, String sortBy, String orderType, Pageable pageable);
 
 
     JobApplicationEntity getByJobApplicationId(Long jobApplicationId);
