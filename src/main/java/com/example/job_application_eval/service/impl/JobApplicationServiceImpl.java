@@ -109,7 +109,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
         }
-
         return jobApplicationRepository.save(jobApplicationEntity);
     }
 
