@@ -27,8 +27,8 @@ public class SkillEntity {
     private String skillName;
 
     @Column(nullable = false, name= "skill_proficiency")
-    @Min(1)
-    @Max(5)
+    @Min(value = 1, message = "Value can not be lower than 1")
+    @Max(value = 6, message = "Value can not be bigger than 6")
     private Integer skillProficiency;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

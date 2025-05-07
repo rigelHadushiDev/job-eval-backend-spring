@@ -25,7 +25,7 @@ public class SkillDto {
     @NotBlank(groups = {OnEditSkills.class, Default.class}, message = "Skill name can not be empty.")
     private String skillName;
 
-    @Min(value = 0, message = "Value can not be lower than 0")
+    @Min(value = 1, message = "Value can not be lower than 1")
     @Max(value = 6, message = "Value can not be bigger than 6")
     @NotNull(groups = {OnEditSkills.class, Default.class}, message = "Skill Proficiency is required")
     private Integer skillProficiency;

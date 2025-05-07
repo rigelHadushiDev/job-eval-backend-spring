@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 public enum ProficiencyLevel {
-    NONE(0, "None"),
     A1(1, "A1"),
     A2(2, "A2"),
     B1(3, "B1"),

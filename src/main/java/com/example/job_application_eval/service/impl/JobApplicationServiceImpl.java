@@ -7,18 +7,22 @@ import com.example.job_application_eval.entities.*;
 import com.example.job_application_eval.entities.enums.ApplicationStatus;
 import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.repository.JobApplicationRepository;
+import com.example.job_application_eval.repository.specifications.JobApplicationSpecifications;
 import com.example.job_application_eval.service.*;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,15 +37,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final ApplicantEnglishLevelService applicantEnglishLevelService;
     private final FastApiRequestService fastApiRequestService;
 
-    @Override
-    public Page<JobApplicationEntity> getJobApplicationsByUserId(Long userId, Pageable pageable) {
 
-        UserEntity userEntity = utils.getCurrentUser();
-        if (userEntity.getRole() == Role.USER) {
-            utils.assertCurrentUserOwns(userId);
-        }
-        return jobApplicationRepository.findByUser_UserId(userId, pageable);
-    }
 
     @Override
     public JobApplicationEntity apply(Long jobPostingId) {
@@ -65,32 +61,42 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         applicantDataRequestDto.setUsername(userEntity.getUsername());
 
         List<EducationEntity> eduEntities = educationService.findEducationsByUserId(userEntity.getUserId());
-        List<ApplicantDataRequestDto.EducationLevelEntry> educationLevels = eduEntities.stream()
-                .map(edu -> new ApplicantDataRequestDto.EducationLevelEntry(edu.getEducationLevel()))
-                .toList();
+        List<ApplicantDataRequestDto.EducationLevelEntry> educationLevels = Optional.ofNullable(eduEntities)
+                .filter(eduList -> !eduList.isEmpty())
+                .map(eduList -> eduList.stream()
+                        .map(edu -> new ApplicantDataRequestDto.EducationLevelEntry(edu.getEducationLevel()))
+                        .toList())
+                .orElseGet(() -> List.of(new ApplicantDataRequestDto.EducationLevelEntry(null)));
         applicantDataRequestDto.setEducationLevel(educationLevels);
 
-        ApplicantEnglishLevelEntity englishLevel = applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userEntity.getUserId());
-        applicantDataRequestDto.setEnglishLevel(englishLevel.getProficiencyLevel());
+        // English Level Handling with Optional
+        Optional<ApplicantEnglishLevelEntity> englishLevelOptional = Optional.ofNullable(applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userEntity.getUserId()));
+        applicantDataRequestDto.setEnglishLevel(englishLevelOptional
+                .map(ApplicantEnglishLevelEntity::getProficiencyLevel)
+                .orElse(null));
 
+        // Skills Data Handling with Optional or Default value
         List<SkillEntity> skillEntities = skillService.findSkillsByUserId(userEntity.getUserId());
-        List<ApplicantDataRequestDto.SkillEntry> skills = skillEntities.stream()
-                .map(skill -> new ApplicantDataRequestDto.SkillEntry(skill.getSkillName(), skill.getSkillProficiency()))
-                .toList();
+        List<ApplicantDataRequestDto.SkillEntry> skills = Optional.ofNullable(skillEntities)
+                .filter(skillList -> !skillList.isEmpty())
+                .map(skillList -> skillList.stream()
+                        .map(skill -> new ApplicantDataRequestDto.SkillEntry(skill.getSkillName(), skill.getSkillProficiency()))
+                        .toList())
+                .orElseGet(() -> List.of(new ApplicantDataRequestDto.SkillEntry("No skills", 0)));  // Default skill if empty
         applicantDataRequestDto.setSkills(skills);
 
         applicantDataRequestDto.setJobPostingId(jobPostingId);
 
         String fastApiUrl = "http://localhost:8000/job-application/";
 
-        try{
-        ResponseEntity<ApplicantScoreResponseDto> response = fastApiRequestService.sendRequest(
-                fastApiUrl, HttpMethod.POST, applicantDataRequestDto, ApplicantScoreResponseDto.class
-        );
+        try {
+            ResponseEntity<ApplicantScoreResponseDto> response = fastApiRequestService.sendRequest(
+                    fastApiUrl, HttpMethod.POST, applicantDataRequestDto, ApplicantScoreResponseDto.class
+            );
 
-        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
-        }
+            if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
+            }
 
             ApplicantScoreResponseDto score = response.getBody();
             jobApplicationEntity.setGeneralScore(score.getFinalScore());
@@ -104,11 +110,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
         }
 
-
-
         return jobApplicationRepository.save(jobApplicationEntity);
     }
-
 
     @Override
     public JobApplicationEntity changeStatus(Long jobApplicationId, ApplicationStatus status) {
@@ -121,28 +124,33 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
-    public Page<JobApplicationEntity> getJobApplicationsByStatus(ApplicationStatus status, Pageable pageable) {
-        return jobApplicationRepository.findByStatus(status, pageable);
+    public Page<JobApplicationEntity> filterMyJobApplications(ApplicationStatus status, Long jobPostingId,
+                                                         LocalDateTime applicationDate, String sortBy, String orderType, Pageable pageable) {
+
+        Long userId = utils.getCurrentUserId();
+
+        Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId,status,
+                jobPostingId, applicationDate, sortBy, orderType);
+
+        return jobApplicationRepository.findAll(spec, pageable);
     }
 
     @Override
-    public Page<JobApplicationEntity> getJobApplicationsByJobPostingId(Long jobPostingId, Pageable pageable) {
+    public Page<JobApplicationEntity> filterAnyJobApplications(Long userId, ApplicationStatus status, Long jobPostingId,
+                                                             LocalDateTime applicationDate, String sortBy, String orderType,Pageable pageable) {
 
-        jobPostingService.findById(jobPostingId);
-        return jobApplicationRepository.findByJobPosting_JobPostingId(jobPostingId, pageable);
-    }
+        Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId, status,
+                jobPostingId, applicationDate, sortBy, orderType);
 
-    @Override
-    public Page<JobApplicationEntity> getByStatusAndJobPostingId(ApplicationStatus status, Long jobPostingId, Pageable pageable) {
-        jobPostingService.findById(jobPostingId);
-        return jobApplicationRepository.findByStatusAndJobPosting_JobPostingId(status, jobPostingId, pageable);
+        return jobApplicationRepository.findAll(spec, pageable);
     }
 
     @Override
     public JobApplicationEntity getByJobApplicationId(Long jobApplicationId){
         return jobApplicationRepository.findById(jobApplicationId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application not found"));
-}
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application not found"));
+    }
+
 
     public void sendStatusUpdateEmail(UserEntity user, String jobTitle, ApplicationStatus status) {
         String fullName = user.getFirstname() + " " + user.getLastname();

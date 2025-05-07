@@ -5,10 +5,11 @@ import com.example.job_application_eval.entities.enums.ApplicationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long> {
+public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long>, JpaSpecificationExecutor<JobApplicationEntity> {
 
     Page<JobApplicationEntity> findByStatus(ApplicationStatus status, Pageable pageable);
 

@@ -38,8 +38,10 @@ public class WorkExperienceDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date endDate;
 
+    @NotBlank(message = "Description is required.", groups = {Default.class, OnEditWorkExp.class})
     private String description;
 
+    @NotNull(message = "Total work experience years is required.", groups = {Default.class, OnEditWorkExp.class})
     private Double totalYears;
 
     private Long userId;
