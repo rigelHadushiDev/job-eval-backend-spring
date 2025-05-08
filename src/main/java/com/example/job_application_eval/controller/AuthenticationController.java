@@ -49,4 +49,5 @@ public class AuthenticationController {
         LogInResponse response = authenticationService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok(response);
     }
+
 }
