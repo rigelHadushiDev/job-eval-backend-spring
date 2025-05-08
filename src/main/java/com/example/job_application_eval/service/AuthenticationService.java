@@ -16,4 +16,6 @@ public interface AuthenticationService {
     String generateTemporaryPassword();
 
     void sendVerificationEmail(UserEntity user, String hashedTemporaryPassword);
+
+     LogInResponse refreshAccessToken(String refreshToken);
 }
