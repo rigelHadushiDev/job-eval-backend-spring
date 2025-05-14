@@ -12,4 +12,5 @@ public class LogInResponse {
     private String refreshToken;
     private long expiresIn;
     private String role;
+    private boolean passwordChanged;
 }

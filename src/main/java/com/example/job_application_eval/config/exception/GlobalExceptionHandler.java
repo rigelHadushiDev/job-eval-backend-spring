@@ -1,5 +1,6 @@
 package com.example.job_application_eval.config.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -67,6 +68,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorBody, status);
     }
 
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Map<String, Object>> handleExpiredJwtException(ExpiredJwtException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+        Map<String, Object> errorBody = new HashMap<>();
+        errorBody.put("timestamp", ZonedDateTime.now());
+        errorBody.put("status", status.value());
+        errorBody.put("error", status.getReasonPhrase());
+        errorBody.put("path", request.getRequestURI());
+        errorBody.put("message", "jwtExpired");
+
+        return new ResponseEntity<>(errorBody, status);
+    }
+
+
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -76,7 +95,7 @@ public class GlobalExceptionHandler {
         errorBody.put("status", status.value());
         errorBody.put("error", status.getReasonPhrase());
         errorBody.put("path", request.getRequestURI());
-        errorBody.put("message", "Unexpected error occurred.");
+        errorBody.put("message", "unexpectedErrorOccurred.");
 
 
         ex.printStackTrace();
