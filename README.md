@@ -111,7 +111,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
     ```
 3. **Configuration**
 
-Update `src/main/resources/application.properties` with your database credentials and email settings:
+    Update `src/main/resources/application.properties` with your database credentials and email settings:
 
    ```bash
    spring.datasource.url=jdbc:postgresql://localhost:your_port/your_db
@@ -133,7 +133,7 @@ Update `src/main/resources/application.properties` with your database credential
    ```
 5. API Documentation
 
-Once running, explore all endpoints via Swagger UI at:
+    Once running, explore all endpoints via Swagger UI at:
 
    ```bash
    http://localhost:8080/swagger-ui.html
@@ -141,27 +141,27 @@ Once running, explore all endpoints via Swagger UI at:
 
 6. Running Tests
 
-Unit and integration tests will be added in the next update.
+    Unit and integration tests will be added in the next update.
 
 7. Project Structure
 
-```
-src/
-├── main/
-│   ├── java/com/codepionners/
-│   │   ├── config/
-│   │   ├── controller/
-│   │   ├── dto/
-│   │   ├── entity/
-│   │   ├── repository/
-│   │   ├── security/
-│   │   ├── service/
-│   │   └── JobEvalApplication.java
-│   └── resources/
-│       ├── application.properties
-│       └── templates/
-└── test/
-```
+    ```
+    src/
+    ├── main/
+    │   ├── java/com/codepionners/
+    │   │   ├── config/
+    │   │   ├── controller/
+    │   │   ├── dto/
+    │   │   ├── entity/
+    │   │   ├── repository/
+    │   │   ├── security/
+    │   │   ├── service/
+    │   │   └── JobEvalApplication.java
+    │   └── resources/
+    │       ├── application.properties
+    │       └── templates/
+    └── test/
+    ```
 
 
 ---
@@ -179,4 +179,4 @@ src/
 
 9. Author
 
-Developed by [@rigelHadushiDev](https://github.com/rigelHadushiDev)
+    Developed by [@rigelHadushiDev](https://github.com/rigelHadushiDev)
