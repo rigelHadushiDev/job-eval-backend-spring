@@ -27,6 +27,7 @@ public class OpenApiConfig {
                                 .url("https://github.com/rigelHadushiDev")
                                 .email("rigelhadushi4@gmail.com"))
                 )
+
                 .externalDocs(new ExternalDocumentation()
                         .description("Source code & issues")
                         .url("https://github.com/rigelHadushiDev/job-eval-backend-spring"))
