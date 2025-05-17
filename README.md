@@ -105,10 +105,10 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
    cd job-eval-backend-spring
    ```
 2. **Start PostgreSQL in Docker**
-
-   ```bash 
-   docker-compose up -d
-   ```
+    
+    ```bash 
+    docker-compose up -d
+    ```
 3. **Configuration**
 
 Update `src/main/resources/application.properties` with your database credentials and email settings:
