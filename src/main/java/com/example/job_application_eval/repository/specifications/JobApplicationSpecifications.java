@@ -44,6 +44,7 @@ public class JobApplicationSpecifications {
         };
     }
 
+
     public static Specification<JobApplicationEntity> orderBy(String sortBy, String orderType) {
         return (root, query, criteriaBuilder) -> {
             if ("generalScore".equalsIgnoreCase(sortBy)) {
