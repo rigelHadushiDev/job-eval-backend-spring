@@ -109,7 +109,8 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
     ```bash 
     docker-compose up -d
     ```
-3. **Configuration**
+
+### Configuration
 
     Update `src/main/resources/application.properties` with your database credentials and email settings:
 
@@ -125,13 +126,13 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
    spring.mail.properties.mail.smtp.auth=true
    spring.mail.properties.mail.smtp.starttls.enable=true
    ```
-4. Running the Application
+### Running the Application
 
    ```bash
    ./mvnw clean install
    ./mvnw spring-boot:run
    ```
-5. API Documentation
+### API Documentation
 
     Once running, explore all endpoints via Swagger UI at:
 
@@ -139,11 +140,11 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
    http://localhost:8080/swagger-ui.html
    ```
 
-6. Running Tests
+### Running Tests
 
     Unit and integration tests will be added in the next update.
 
-7. Project Structure
+### Project Structure
 
     ```
     src/
@@ -167,7 +168,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
 ---
 
 
-8. Related Repositories
+### Related Repositories
 
 - **FastAPI Microservice (AI Scoring)**:  [job-eval-backend-fastapi](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
@@ -177,6 +178,6 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
 
 ---
 
-9. Author
+### Author
 
     Developed by [@rigelHadushiDev](https://github.com/rigelHadushiDev)
