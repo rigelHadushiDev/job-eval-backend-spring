@@ -3,6 +3,7 @@ package com.example.job_application_eval.dtos;
 import com.example.job_application_eval.entities.enums.EducationLevel;
 import com.example.job_application_eval.entities.enums.EmploymentType;
 import com.example.job_application_eval.entities.enums.ProficiencyLevel;
+import com.example.job_application_eval.entities.enums.WorkingType;
 import com.example.job_application_eval.validation.OnJobPostingEdit;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
@@ -54,4 +55,18 @@ public class JobPostingDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd' 'HH:mm:ss")
     private LocalDateTime closedAt;
+
+    @NotNull(groups = {OnJobPostingEdit.class, Default.class},
+            message = "Minimum salary is required.")
+    @Min(value = 0, message = "Minimum salary must be zero or positive.")
+    private Integer minSalary;
+
+    @NotNull(groups = {OnJobPostingEdit.class, Default.class},
+            message = "Maximum salary is required.")
+    @Min(value = 0, message = "Maximum salary must be zero or positive.")
+    private Integer maxSalary;
+
+    private String city;           // optional
+    private String country;        // optional
+    private WorkingType workingType;
 }

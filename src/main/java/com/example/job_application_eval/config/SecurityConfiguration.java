@@ -33,10 +33,17 @@ public class SecurityConfiguration {
                         .configurationSource(corsConfigurationSource())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/jobPosting/all").permitAll()
-                        .requestMatchers("/jobPosting/getJobPosting").permitAll()
-                        .requestMatchers("/jobPosting/searchByJobTitle").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/jobPosting/all",
+                                "/jobPosting/getJobPosting",
+                                "/jobPosting/searchByJobTitle",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/webjars/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

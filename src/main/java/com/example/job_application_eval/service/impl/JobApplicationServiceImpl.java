@@ -5,11 +5,10 @@ import com.example.job_application_eval.dtos.ApplicantDataRequestDto;
 import com.example.job_application_eval.dtos.ApplicantScoreResponseDto;
 import com.example.job_application_eval.entities.*;
 import com.example.job_application_eval.entities.enums.ApplicationStatus;
-import com.example.job_application_eval.entities.enums.Role;
+import jakarta.mail.MessagingException;
 import com.example.job_application_eval.repository.JobApplicationRepository;
 import com.example.job_application_eval.repository.specifications.JobApplicationSpecifications;
 import com.example.job_application_eval.service.*;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -165,7 +164,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                     + "<p style=\"font-size: 16px;\">We are pleased to inform you that you have been <strong>accepted</strong> for the <strong>" + jobTitle + "</strong> role.</p>"
                     + "<p style=\"font-size: 16px;\">We'll follow up soon with next steps, onboarding, and start date information.</p>"
                     + "<p style=\"font-size: 14px; color: #777; margin-top: 20px;\">For any questions, feel free to reach out to us.</p>"
-                    + "<p style=\"font-size: 14px; color: #777;\">Sincerely,<br>The X-Company Team</p>"
+                    + "<p style=\"font-size: 14px; color: #777;\">Sincerely,<br>The CodePioneers Team</p>"
                     + "</div></body></html>";
         } else if (status == ApplicationStatus.REJECTED) {
             subject = "Your Application for " + jobTitle + " Has Been Reviewed";
@@ -176,7 +175,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                     + "<p style=\"font-size: 16px;\">Thank you for applying for the <strong>" + jobTitle + "</strong> position.</p>"
                     + "<p style=\"font-size: 16px;\">After careful consideration, we regret to inform you that you were not selected for this role.</p>"
                     + "<p style=\"font-size: 16px;\">We encourage you to apply again in the future, and we sincerely appreciate your interest in joining our team.</p>"
-                    + "<p style=\"font-size: 14px; color: #777;\">Wishing you all the best,<br>The X-Company Team</p>"
+                    + "<p style=\"font-size: 14px; color: #777;\">Wishing you all the best,<br>The CodePioneers Team</p>"
                     + "</div></body></html>";
         } else {
             return;

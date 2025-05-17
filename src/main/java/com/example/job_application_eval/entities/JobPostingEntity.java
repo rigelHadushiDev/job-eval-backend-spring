@@ -5,6 +5,7 @@ import com.example.job_application_eval.config.utils.ProficiencyLevelConverter;
 import com.example.job_application_eval.entities.enums.EducationLevel;
 import com.example.job_application_eval.entities.enums.EmploymentType;
 import com.example.job_application_eval.entities.enums.ProficiencyLevel;
+import com.example.job_application_eval.entities.enums.WorkingType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +55,22 @@ public class JobPostingEntity {
 
     @Column(name = "closedAt")
     private LocalDateTime closedAt;
+
+    @Column(name = "min_salary")
+    private Integer minSalary;
+
+    @Column(name = "max_salary")
+    private Integer maxSalary;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "country")
+    private String country;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "working_type", nullable = false)
+    private WorkingType workingType;
 
     @PrePersist
     public void prePersist() {

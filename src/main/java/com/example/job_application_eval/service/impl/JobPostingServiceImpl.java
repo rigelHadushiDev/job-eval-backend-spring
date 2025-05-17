@@ -4,6 +4,7 @@ package com.example.job_application_eval.service.impl;
 import com.example.job_application_eval.config.utils.Utils;
 import com.example.job_application_eval.dtos.JobPostingFastApiDto;
 import com.example.job_application_eval.entities.JobPostingEntity;
+import com.example.job_application_eval.entities.enums.WorkingType;
 import com.example.job_application_eval.repository.JobPostingRepository;
 import com.example.job_application_eval.service.FastApiRequestService;
 import com.example.job_application_eval.service.JobPostingService;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +28,10 @@ public class JobPostingServiceImpl  implements JobPostingService {
 
     @Override
     public JobPostingEntity save(JobPostingEntity jobPostingEntity) {
-        JobPostingEntity savedJobPosting = jobPostingRepository.save(jobPostingEntity);
 
+        verifyLocationForWorkingType(jobPostingEntity);
+
+        JobPostingEntity savedJobPosting = jobPostingRepository.save(jobPostingEntity);
         String fastApiUrl = "http://localhost:8000/job-posting/";
         JobPostingFastApiDto jobPostingDto = getJobPostingFastApiDto(savedJobPosting);
 
@@ -75,6 +79,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
     public JobPostingEntity edit(JobPostingEntity jobPostingEntity) {
         findById(jobPostingEntity.getJobPostingId());
 
+        verifyLocationForWorkingType(jobPostingEntity);
         JobPostingEntity edited = jobPostingRepository.save(jobPostingEntity);
         String fastApiUrl = "http://localhost:8000/editJobPosting/";
         JobPostingFastApiDto jobPostingDTO = getJobPostingFastApiDto(edited);
@@ -89,6 +94,22 @@ public class JobPostingServiceImpl  implements JobPostingService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editJobPostingFailed");
         }
         return edited;
+    }
+
+    private void verifyLocationForWorkingType(JobPostingEntity jobPostingEntity) {
+        if (jobPostingEntity.getWorkingType() == WorkingType.HYBRID
+                || jobPostingEntity.getWorkingType() == WorkingType.ON_SITE) {
+
+            boolean missingCity = !StringUtils.hasText(jobPostingEntity.getCity());
+            boolean missingCountry = !StringUtils.hasText(jobPostingEntity.getCountry());
+
+            if (missingCity || missingCountry) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "officesShouldHaveALocation"
+                );
+            }
+        }
     }
 
     @Override
