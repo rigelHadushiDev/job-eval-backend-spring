@@ -180,4 +180,3 @@ src/
 9. Author
 
 Developed by [@rigelHadushiDev](https://github.com/rigelHadushiDev)
-
