@@ -164,9 +164,9 @@ src/
 
 ## Related Repositories
 
-- **FastAPI Microservice (AI Evaluation Engine)**:  [job-eval-backend-fastapi](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
+- **FastAPI Microservice (AI Scoring)**:  [job-eval-backend-fastapi](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
-- **React Frontend (User Interface)**:  [job-eval-frontend-react](https://github.com/rigelHadushiDev/job-eval-frontend-react)
+- **React Frontend (User Interface)**:  [job-eval-frontend-react](https://github.com/rigelHadushiDev/job-eval-frontend-react) (work in progress)
 
 
 
