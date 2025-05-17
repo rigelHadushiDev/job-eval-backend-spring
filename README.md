@@ -100,6 +100,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/rigelHadushiDev/job-eval-backend-spring.git
    cd job-eval-backend-spring
@@ -112,7 +113,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
 
 ### Configuration
 
-    Update `src/main/resources/application.properties` with your database credentials and email settings:
+Update `src/main/resources/application.properties` with your database credentials and email settings:
 
    ```bash
    spring.datasource.url=jdbc:postgresql://localhost:your_port/your_db
@@ -134,7 +135,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
    ```
 ### API Documentation
 
-    Once running, explore all endpoints via Swagger UI at:
+Once running, explore all endpoints via Swagger UI at:
 
    ```bash
    http://localhost:8080/swagger-ui.html
@@ -142,7 +143,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
 
 ### Running Tests
 
-    Unit and integration tests will be added in the next update.
+Unit and integration tests will be added in the next update.
 
 ### Project Structure
 
