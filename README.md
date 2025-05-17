@@ -181,4 +181,4 @@ Unit and integration tests will be added in the next update.
 
 ### Author
 
-    Developed by [@rigelHadushiDev](https://github.com/rigelHadushiDev)
+Developed by [@rigelHadushiDev](https://github.com/rigelHadushiDev)
