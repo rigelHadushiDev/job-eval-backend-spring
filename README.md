@@ -38,7 +38,7 @@ Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.co
   Enables recruiters to create, edit, and close job listings; filter and review incoming applications with AI scores; update statuses; and notify candidates.
 
 - **AI-Based Evaluation**  
-  Offloads semantic matching to a FastAPI microservice that leverages advanced algorithms and the `all-MiniLM-L6-v2` model to compute a normalized “semantic fit” score.
+  Offloads semantic matching to a FastAPI microservice that leverages advanced algorithms and the `all-MiniLM-L6-v2` model from Sentence Transformers to compute a general suitability score.
 
 - **Real-Time Notifications**  
   Sends email alerts to applicants upon changes in their application status.
@@ -170,8 +170,6 @@ Unit and integration tests will be added in the next update.
 - **FastAPI Microservice (AI Scoring)**:  [job-eval-backend-fastapi](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
 - **React Frontend (User Interface)**:  [job-eval-frontend-react](https://github.com/rigelHadushiDev/job-eval-frontend-react) (work in progress)
-
-
 
 ---
 
