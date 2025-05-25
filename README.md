@@ -1,9 +1,7 @@
 # CodePioneers Career Portal – Spring Boot Backend (API)
 
 **AI-Powered Recruitment Platform**  
-Applicants submit their CVs, and recruiters compare candidates side by side, aided by an AI-powered FastAPI microservice that scores every applicant in real time using a semantic BERT model and custom matching algorithms.
-
----
+Applicants build their profiles by entering details about their education, work experience, projects, skills, and languages. After applying, an AI-powered FastAPI microservice acts as the initial screening layer, scoring each applicant in real time using advanced data science algorithms and a Sentence Transformer model to evaluate their suitability for the job, helping recruiters focus on the most promising candidates first.---
 
 ## Table of Contents
 
@@ -25,9 +23,7 @@ Applicants submit their CVs, and recruiters compare candidates side by side, aid
 
 ## Project Overview
 
-CodePioneers' Career Portal is a demo recruitment platform. Applicants submit their CVs, and recruiters compare candidates side by side, helped by an AI-powered FastAPI micro-service that scores every applicant in real time.
-
-The micro-service uses a semantic BERT model plus custom matching algorithms to generate a score on how much each candidate fits the job.
+CodePioneers' Career Portal is a demo recruitment platform where applicants submit detailed profile information. An AI-powered FastAPI microservice acts as an initial filter, identifying the most promising candidates based on their suitability for each job. Recruiters can then review the top-matched applicants, decide who to shortlist, and invite selected candidates for interviews. They can also create, update, and close job postings directly from the platform.
 
 Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
