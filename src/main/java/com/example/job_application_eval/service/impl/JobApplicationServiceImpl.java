@@ -69,7 +69,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .orElseGet(() -> List.of(new ApplicantDataRequestDto.EducationLevelEntry(null)));
         applicantDataRequestDto.setEducationLevel(educationLevels);
 
-        // English Level Handling with Optional
         Optional<ApplicantEnglishLevelEntity> englishLevelOptional = Optional.ofNullable(applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userEntity.getUserId()));
         applicantDataRequestDto.setEnglishLevel(englishLevelOptional
                 .map(ApplicantEnglishLevelEntity::getProficiencyLevel)
