@@ -74,7 +74,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .map(ApplicantEnglishLevelEntity::getProficiencyLevel)
                 .orElse(null));
 
-        // Skills Data Handling with Optional or Default value
         List<SkillEntity> skillEntities = skillService.findSkillsByUserId(userEntity.getUserId());
         List<ApplicantDataRequestDto.SkillEntry> skills = Optional.ofNullable(skillEntities)
                 .filter(skillList -> !skillList.isEmpty())
