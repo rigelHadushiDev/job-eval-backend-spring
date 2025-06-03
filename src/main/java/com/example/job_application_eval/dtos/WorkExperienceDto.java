@@ -41,7 +41,6 @@ public class WorkExperienceDto {
     @NotBlank(message = "Description is required.", groups = {Default.class, OnEditWorkExp.class})
     private String description;
 
-    @NotNull(message = "Total work experience years is required.", groups = {Default.class, OnEditWorkExp.class})
     private Double totalYears;
 
     private Long userId;

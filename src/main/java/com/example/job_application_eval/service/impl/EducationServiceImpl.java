@@ -33,7 +33,7 @@ public class EducationServiceImpl implements EducationService {
     public List<EducationEntity> findEducationsByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these educations");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewEducations");
         }
         return educationRepository.findByUser_UserId(userId);
     }
@@ -63,7 +63,7 @@ public class EducationServiceImpl implements EducationService {
 
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(educationEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these education");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewEducation");
         }
         return educationEntity;
     }

@@ -20,6 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -100,14 +102,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .authorities("ROLE_" + user.getRole().name())
                 .build();
 
-        String token = jwtService.generateToken(userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", user.getRole().name());
+        extraClaims.put("userId", user.getUserId());
+
+        String token = jwtService.generateToken(extraClaims, userDetails);
         long expiresIn = jwtService.getExpirationTime();
 
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 
         String role = user.getRole().name();
 
-        return new LogInResponse(token, refreshToken, expiresIn, role, user.isPasswordChanged());
+        return new LogInResponse(user.getUserId(), token, refreshToken, expiresIn, role, user.isPasswordChanged());
     }
 
     @Override
@@ -210,6 +216,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String newAccessToken = jwtService.generateToken(userDetails);
         long newExpiresIn = jwtService.getExpirationTime();
 
-        return new LogInResponse(newAccessToken, refreshToken, newExpiresIn, user.getRole().name(), user.isPasswordChanged());
+        return new LogInResponse(user.getUserId(),newAccessToken, refreshToken, newExpiresIn, user.getRole().name(), user.isPasswordChanged());
     }
 }

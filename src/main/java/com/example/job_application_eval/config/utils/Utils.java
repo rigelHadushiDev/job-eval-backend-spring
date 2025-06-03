@@ -1,5 +1,6 @@
 package com.example.job_application_eval.config.utils;
 
+import com.example.job_application_eval.entities.ProjectEntity;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.WorkExperienceEntity;
 import com.example.job_application_eval.repository.UserRepository;
@@ -41,30 +42,48 @@ public class Utils {
     public void validateAndUpdateWorkExperience(WorkExperienceEntity workExp) {
         LocalDate startDate = toLocalDate(workExp.getStartDate());
         LocalDate endDate = workExp.getEndDate() != null ? toLocalDate(workExp.getEndDate()) : null;
-        LocalDate today = LocalDate.now();
-        boolean isFinished = Boolean.TRUE.equals(workExp.getFinished());
+        boolean isFinished = workExp.getFinished();
 
+        LocalDate effectiveEndDate = validateDates(startDate, endDate, isFinished, "experience");
 
-        if (startDate.isAfter(today)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be in the future.");
-        }
-
-        if (isFinished) {
-            if (endDate == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End date is required when experience is marked as finished.");
-            }
-            if (endDate.isBefore(startDate)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End date must be after start date.");
-            }
-        }
-
-        LocalDate effectiveEndDate = isFinished ? endDate : today;
-
+        // Calculate total years of experience
         long totalDays = ChronoUnit.DAYS.between(startDate, effectiveEndDate);
         double years = totalDays / 365.25;
         double roundedYears = Math.round(years * 10.0) / 10.0;
 
         workExp.setTotalYears(roundedYears);
+    }
+
+    public void validateAndUpdateProject(ProjectEntity project) {
+        LocalDate startDate = toLocalDate(project.getStartDate());
+        LocalDate endDate = project.getEndDate() != null ? toLocalDate(project.getEndDate()) : null;
+        boolean isFinished = project.getFinished();
+
+        validateDates(startDate, endDate, isFinished, "project");
+    }
+
+    private LocalDate validateDates(LocalDate startDate, LocalDate endDate, boolean isFinished, String context) {
+        LocalDate today = LocalDate.now();
+
+        if (startDate.isAfter(today)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "startDateCannotBeInFuture");
+        }
+
+        if (isFinished) {
+            if (endDate == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "endDateRequiredWhen" + capitalize(context) + "IsFinished");
+            }
+            if (endDate.isBefore(startDate)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "endDateMustBeAfterStartDate");
+            }
+            return endDate;
+        }
+
+        return today;
+    }
+
+    private String capitalize(String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
 
     private LocalDate toLocalDate(Date date) {

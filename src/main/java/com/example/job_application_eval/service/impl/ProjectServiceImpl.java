@@ -33,24 +33,26 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectEntity> findProjectsByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these projects");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "notAuthorizedToViewTheseProjects");
         }
         return repository.findByUser_UserId(userId);
     }
 
     @Override
     public ProjectEntity editProject(ProjectEntity projectEntity) {
-        ProjectEntity currentExperience = repository.findByProjectId(projectEntity.getProjectId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+        ProjectEntity currentProject = repository.findByProjectId(projectEntity.getProjectId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "projectNotFound"));
 
-        utils.assertCurrentUserOwns(currentExperience.getUser().getUserId());
-        projectEntity.setUser(currentExperience.getUser());
+        utils.assertCurrentUserOwns(currentProject.getUser().getUserId());
+        utils.validateAndUpdateProject(currentProject);
+        projectEntity.setUser(currentProject.getUser());
         return repository.save(projectEntity);
     }
 
     @Override
     public ProjectEntity save(ProjectEntity projectEntity) {
         UserEntity currentUser = utils.getCurrentUser();
+        utils.validateAndUpdateProject(projectEntity);
         projectEntity.setUser(currentUser);
         return repository.save(projectEntity);
     }
@@ -58,11 +60,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectEntity findProjectById(Long projectId) {
         ProjectEntity projectEntity =  repository.findByProjectId(projectId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project Not Found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "projectNotFound"));
 
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(projectEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view this project");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "notAuthorizedToViewThisProject");
         }
         return projectEntity;
     }

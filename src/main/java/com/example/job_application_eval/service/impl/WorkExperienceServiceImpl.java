@@ -1,5 +1,5 @@
 package com.example.job_application_eval.service.impl;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.job_application_eval.config.utils.Utils;
 import com.example.job_application_eval.dtos.WorkExperienceFastAPIDto;
 import com.example.job_application_eval.entities.UserEntity;
@@ -37,6 +37,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     private final FastApiRequestService fastApiRequestService;
 
     @Override
+    @Transactional
     public WorkExperienceEntity deleteWorkExperience(Long workExperienceId) {
         WorkExperienceEntity currentExperience = findWorkExperienceById(workExperienceId);
         utils.assertCurrentUserOwns(currentExperience.getUser().getUserId());
@@ -61,15 +62,16 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     public List<WorkExperienceEntity> findWorkExperiencesByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these work experiences");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewWorkExperiences");
         }
         return repository.findByUser_UserId(userId);
     }
 
     @Override
+    @Transactional
     public WorkExperienceEntity editWorkExperience(WorkExperienceEntity workExperienceEntity) {
         WorkExperienceEntity currentExperience = repository.findByWorkExperienceId(workExperienceEntity.getWorkExperienceId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Work Experience not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "workExperienceNotFound"));
 
         utils.assertCurrentUserOwns(currentExperience.getUser().getUserId());
         utils.validateAndUpdateWorkExperience(workExperienceEntity);
@@ -92,6 +94,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     }
 
     @Override
+    @Transactional
     public WorkExperienceEntity save(WorkExperienceEntity workExperienceEntity) {
         UserEntity currentUser = utils.getCurrentUser();
         workExperienceEntity.setUser(currentUser);
@@ -131,7 +134,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(workExpEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view this work experience");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewWorkExperience");
         }
         return workExpEntity;
     }

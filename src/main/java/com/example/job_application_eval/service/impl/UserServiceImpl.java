@@ -96,12 +96,27 @@ public class UserServiceImpl implements UserService {
             currentUser.setFullName((updatedFirst + " " + updatedLast).trim());
         }
 
-        if (userRepository.findByUsername(userEntity.getUsername()).isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "This username is already taken. Please choose a different one."
-            );
-        }
+        Optional.ofNullable(userEntity.getUsername()).ifPresent(newUsername -> {
+            List<UserEntity> usersWithSameUsername = userRepository.findAllByUsername(newUsername);
+
+            if (usersWithSameUsername.size() > 1) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "usernameTaken"
+                );
+            }
+
+            if (usersWithSameUsername.size() == 1) {
+                UserEntity existingUser = usersWithSameUsername.get(0);
+                if (!existingUser.getUserId().equals(currentUser.getUserId())) {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "usernameTaken"
+                    );
+                }
+            }
+            currentUser.setUsername(newUsername);
+        });
 
         Optional.ofNullable(userEntity.getUsername()).ifPresent(currentUser::setUsername);
         Optional.ofNullable(userEntity.getGender()).ifPresent(currentUser::setGender);
@@ -128,14 +143,14 @@ public class UserServiceImpl implements UserService {
         if (existingUserName.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "This username is already taken. Please choose a different username."
+                    "usernameTaken"
             );
         }
 
         if (existingEmail.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "This email is already used. Please choose a different email."
+                    "emailTaken"
             );
         }
         String rawTemporaryPassword = authService.generateTemporaryPassword();
@@ -158,6 +173,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity getUserByUserName(String username) {
-        return userRepository.findByUsername(username).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+        return userRepository.findByUsername(username).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "userNotFound"));
     }
 }

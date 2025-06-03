@@ -35,10 +35,15 @@ public class EducationDto {
     @NotBlank(message = "Institution name is required", groups = {Default.class, OnEditEducation.class})
     private String institution;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @NotNull(message = "Started Date is required", groups = {Default.class, OnEditEducation.class})
+    private Date startedDate;
+
     @NotNull(message = "Finished field must be specified", groups = {Default.class, OnEditEducation.class})
     private Boolean finished;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @NotNull(message = "Graduation Date is required", groups = {Default.class, OnEditEducation.class})
     private Date graduationDate;
 
     private String achievementsDescription;

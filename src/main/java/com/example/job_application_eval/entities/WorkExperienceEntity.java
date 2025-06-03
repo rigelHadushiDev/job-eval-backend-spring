@@ -49,7 +49,7 @@ public class WorkExperienceEntity {
     private Date endDate;
 
     @Column(name = "finished")
-    private Boolean finished = false;
+    private Boolean finished = true;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

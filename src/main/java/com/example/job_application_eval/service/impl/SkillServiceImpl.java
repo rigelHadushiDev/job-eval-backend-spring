@@ -32,7 +32,7 @@ public class SkillServiceImpl implements SkillService {
     public List<SkillEntity> findSkillsByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these skills");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewSkills");
         }
         return repository.findByUser_UserId(userId);
     }
@@ -60,7 +60,7 @@ public class SkillServiceImpl implements SkillService {
 
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(SkillEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these skills");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewSkill");
         }
         return SkillEntity;
     }

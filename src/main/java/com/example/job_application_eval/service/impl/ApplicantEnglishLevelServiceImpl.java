@@ -32,7 +32,7 @@ public class ApplicantEnglishLevelServiceImpl implements ApplicantEnglishLevelSe
     public ApplicantEnglishLevelEntity findApplicantEnglishLevelByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view these applicant english level");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewApplicantEnglishLevel");
         }
         return repository.findByUser_UserId(userId);
     }
@@ -40,7 +40,7 @@ public class ApplicantEnglishLevelServiceImpl implements ApplicantEnglishLevelSe
     @Override
     public ApplicantEnglishLevelEntity editApplicantEnglishLevel(ApplicantEnglishLevelEntity applicantEnglishLevelEntity) {
         ApplicantEnglishLevelEntity currentUserLanguage = repository.findByApplicantEnglishLevelId(applicantEnglishLevelEntity.getApplicantEnglishLevelId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Applicant English Level not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "applicantEnglishLevelNotFound"));
 
         utils.assertCurrentUserOwns(currentUserLanguage.getUser().getUserId());
         applicantEnglishLevelEntity.setUser(currentUserLanguage.getUser());
@@ -57,11 +57,11 @@ public class ApplicantEnglishLevelServiceImpl implements ApplicantEnglishLevelSe
     @Override
     public ApplicantEnglishLevelEntity findApplicantEnglishLevelById(Long applicantEnglishLevelId) {
         ApplicantEnglishLevelEntity applicantEnglishLevelEntity =  repository.findByApplicantEnglishLevelId(applicantEnglishLevelId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Applicant English Level Not Found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "applicantEnglishLevelNotFound"));
 
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(applicantEnglishLevelEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to view this applicant english level");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewApplicantEnglishLevel");
         }
         return applicantEnglishLevelEntity;
     }

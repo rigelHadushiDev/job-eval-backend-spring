@@ -22,8 +22,8 @@ public class ApplicantEnglishLevelController {
     private final Mapper<ApplicantEnglishLevelEntity, ApplicantEnglishLevelDto> mapper;
 
     @DeleteMapping()
-    public ResponseEntity<ApplicantEnglishLevelDto> deleteApplicantEnglishLevel(@RequestParam Long applicantEnglishLevelDtoId) {
-        ApplicantEnglishLevelEntity applicantEnglishLevelEntity = applicantEnglishLevelService.deleteApplicantEnglishLevel(applicantEnglishLevelDtoId);
+    public ResponseEntity<ApplicantEnglishLevelDto> deleteApplicantEnglishLevel(@RequestParam Long applicantEnglishLevelId) {
+        ApplicantEnglishLevelEntity applicantEnglishLevelEntity = applicantEnglishLevelService.deleteApplicantEnglishLevel(applicantEnglishLevelId);
         return new ResponseEntity<>(mapper.mapTo(applicantEnglishLevelEntity), HttpStatus.OK);
     }
 

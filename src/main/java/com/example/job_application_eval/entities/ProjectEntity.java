@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Date;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -32,6 +34,15 @@ public class ProjectEntity {
 
     @Column(nullable = false, name= "link")
     private String link;
+
+    @Column(nullable = false, name= "finished")
+    private Boolean finished = true;
+
+    @Column(name = "end_date")
+    private Date endDate;
+
+    @Column(name = "start_date")
+    private Date startDate;
 
     @Column(nullable = false, name= "technologies_or_tools")
     private String technologiesOrTools;

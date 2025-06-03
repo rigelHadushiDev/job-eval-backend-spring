@@ -34,13 +34,16 @@ public class EducationEntity {
     @Column(nullable = false)
     private String institution;
 
+    @Column(name = "started_date")
+    private Date startedDate;
+
     @Column
     private Boolean finished;
 
     @Column(name = "graduation_date")
     private Date graduationDate;
 
-    @Column(name = "achievements_description")
+    @Column(name = "achievements_description",columnDefinition = "TEXT")
     private String achievementsDescription;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

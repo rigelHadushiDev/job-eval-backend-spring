@@ -1,5 +1,5 @@
 package com.example.job_application_eval.service.impl;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.job_application_eval.config.utils.Utils;
 import com.example.job_application_eval.dtos.ApplicantDataRequestDto;
 import com.example.job_application_eval.dtos.ApplicantScoreResponseDto;
@@ -39,6 +39,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
 
     @Override
+    @Transactional
     public JobApplicationEntity apply(Long jobPostingId) {
         JobPostingEntity jobPostingEntity = jobPostingService.findById(jobPostingId);
         UserEntity userEntity = utils.getCurrentUser();
@@ -48,7 +49,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         );
 
         if(previousApplication != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already applied for this job");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "alreadyAppliedForThisJob");
         }
 
         JobApplicationEntity jobApplicationEntity = new JobApplicationEntity();

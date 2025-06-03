@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
     private final FastApiRequestService fastApiRequestService;
 
     @Override
+    @Transactional
     public JobPostingEntity save(JobPostingEntity jobPostingEntity) {
 
         verifyLocationForWorkingType(jobPostingEntity);
@@ -76,6 +78,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
 
 
     @Override
+    @Transactional
     public JobPostingEntity edit(JobPostingEntity jobPostingEntity) {
         findById(jobPostingEntity.getJobPostingId());
 
@@ -113,6 +116,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
     }
 
     @Override
+    @Transactional
     public JobPostingEntity delete(Long jobPostingId) {
         JobPostingEntity deletedJobPosting = findById(jobPostingId);
         jobPostingRepository.deleteById(jobPostingId);
