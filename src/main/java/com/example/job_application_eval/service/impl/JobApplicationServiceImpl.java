@@ -83,7 +83,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .map(skillList -> skillList.stream()
                         .map(skill -> new ApplicantDataRequestDto.SkillEntry(skill.getSkillName(), skill.getSkillProficiency()))
                         .toList())
-                .orElseGet(() -> List.of(new ApplicantDataRequestDto.SkillEntry("No skills", 0)));  // Default skill if empty
+                .orElseGet(() -> List.of(new ApplicantDataRequestDto.SkillEntry("No skills", 0)));
+
+        // FOR TESTING
+        System.out.println("Skills being sent to FastAPI:");
+        skills.forEach(skill -> System.out.println(" - " + skill.getSkillName() + ": " + skill.getSkillProficiency()));
+
         applicantDataRequestDto.setSkills(skills);
 
         applicantDataRequestDto.setJobPostingId(jobPostingId);
