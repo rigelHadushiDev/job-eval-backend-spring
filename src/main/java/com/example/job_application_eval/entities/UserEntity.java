@@ -56,7 +56,7 @@ public class UserEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column( nullable = false)
+    @Column()
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
 

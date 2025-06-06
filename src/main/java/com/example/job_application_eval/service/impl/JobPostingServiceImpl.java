@@ -53,7 +53,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
     @Override
     public JobPostingEntity findById(Long jobPostingId) {
         return jobPostingRepository.findById(jobPostingId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Posting not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "jobPostingNotFound"));
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.example.job_application_eval.repository.specifications;
 import com.example.job_application_eval.entities.JobApplicationEntity;
 import com.example.job_application_eval.entities.enums.ApplicationStatus;
 import org.springframework.data.jpa.domain.Specification;
-
+import jakarta.persistence.criteria.Join;
 import java.time.LocalDateTime;
 
 public class JobApplicationSpecifications {
@@ -44,6 +44,44 @@ public class JobApplicationSpecifications {
         };
     }
 
+    public static Specification<JobApplicationEntity> hasFullName(String fullName) {
+        return (root, query, criteriaBuilder) -> {
+            if (fullName != null && !fullName.isEmpty()) {
+                Join<Object, Object> userJoin = root.join("user");
+                return criteriaBuilder.like(criteriaBuilder.lower(userJoin.get("fullName")), "%" + fullName.toLowerCase() + "%");
+            }
+            return null;
+        };
+    }
+
+    public static Specification<JobApplicationEntity> hasJobTitle(String jobTitle) {
+        return (root, query, criteriaBuilder) -> {
+            if (jobTitle != null && !jobTitle.isEmpty()) {
+                Join<Object, Object> jobPostingJoin = root.join("jobPosting");
+                return criteriaBuilder.like(criteriaBuilder.lower(jobPostingJoin.get("jobTitle")), "%" + jobTitle.toLowerCase() + "%");
+            }
+            return null;
+        };
+    }
+
+    public static Specification<JobApplicationEntity> isJobPostingClosed(Boolean closed) {
+        return (root, query, criteriaBuilder) -> {
+            if (closed != null) {
+                Join<Object, Object> jobPostingJoin = root.join("jobPosting");
+                return criteriaBuilder.equal(jobPostingJoin.get("closed"), closed);
+            }
+            return null;
+        };
+    }
+
+    public static Specification<JobApplicationEntity> hasJobApplicationId(Long jobApplicationId) {
+        return (root, query, criteriaBuilder) -> {
+            if (jobApplicationId != null) {
+                return criteriaBuilder.equal(root.get("jobApplicationId"), jobApplicationId);
+            }
+            return null;
+        };
+    }
 
     public static Specification<JobApplicationEntity> orderBy(String sortBy, String orderType) {
         return (root, query, criteriaBuilder) -> {
@@ -66,7 +104,8 @@ public class JobApplicationSpecifications {
 
     public static Specification<JobApplicationEntity> buildSpecification(Long userId, ApplicationStatus status,
                                                                          Long jobPostingId, LocalDateTime applicationDate,
-                                                                         String sortBy, String orderType) {
+                                                                         String sortBy, String orderType, String fullName, String jobTitle,
+                                                                         Boolean closed, Long jobApplicationId) {
 
         Specification<JobApplicationEntity> spec = Specification.where(null);
 
@@ -82,7 +121,18 @@ public class JobApplicationSpecifications {
         if (applicationDate != null) {
             spec = spec.and(hasApplicationDate(applicationDate));
         }
-
+        if (fullName != null && !fullName.isEmpty()) {
+            spec = spec.and(hasFullName(fullName));
+        }
+        if (jobTitle != null && !jobTitle.isEmpty()) {
+            spec = spec.and(hasJobTitle(jobTitle));
+        }
+        if (closed != null) {
+            spec = spec.and(isJobPostingClosed(closed));
+        }
+        if (jobApplicationId != null) {
+            spec = spec.and(hasJobApplicationId(jobApplicationId));
+        }
         spec = spec.and(orderBy(sortBy, orderType));
 
         return spec;

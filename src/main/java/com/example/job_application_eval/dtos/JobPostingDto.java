@@ -66,7 +66,7 @@ public class JobPostingDto {
     @Min(value = 0, message = "Maximum salary must be zero or positive.")
     private Integer maxSalary;
 
-    private String city;           // optional
-    private String country;        // optional
+    private String city;
+    private String country;
     private WorkingType workingType;
 }

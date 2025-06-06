@@ -36,9 +36,13 @@ public class JobApplicationController {
             @RequestParam(required = false) LocalDateTime applicationDate,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String jobTitle,
+            @RequestParam(required = false) Boolean closed,
+            @RequestParam(required = false) Long jobApplicationId,
             Pageable pageable) {
 
-        return jobApplicationService.filterMyJobApplications( status, jobPostingId, applicationDate,sortBy,orderBy, pageable)
+        return jobApplicationService.filterMyJobApplications( status, jobPostingId, applicationDate,sortBy,orderBy,fullName, jobTitle,closed,jobApplicationId ,pageable)
                 .map(userMapper::mapTo);
     }
 
@@ -50,9 +54,13 @@ public class JobApplicationController {
             @RequestParam(required = false) LocalDateTime applicationDate,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String jobTitle,
+            @RequestParam(required = false) Boolean closed,
+            @RequestParam(required = false) Long jobApplicationId,
             Pageable pageable) {
 
-        return jobApplicationService.filterAnyJobApplications(userId, status, jobPostingId, applicationDate, sortBy,orderBy, pageable)
+        return jobApplicationService.filterAnyJobApplications(userId, status, jobPostingId, applicationDate, sortBy,orderBy, fullName,jobTitle,closed ,jobApplicationId, pageable)
                 .map(highRolemapper::mapTo);
     }
 

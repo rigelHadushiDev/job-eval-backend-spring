@@ -48,7 +48,7 @@ public class JobPostingEntity {
     private String requiredSkills;
 
     @Column(name = "closed", nullable = false)
-    private boolean closed = false;
+    private Boolean closed = false;
 
     @Column(name = "opened_at", updatable = false)
     private LocalDateTime openedAt = LocalDateTime.now();

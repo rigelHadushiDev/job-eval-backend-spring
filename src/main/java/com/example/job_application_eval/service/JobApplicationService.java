@@ -16,10 +16,12 @@ public interface JobApplicationService {
     JobApplicationEntity changeStatus(Long jobApplicationId, ApplicationStatus status);
 
     Page<JobApplicationEntity> filterMyJobApplications(ApplicationStatus status, Long jobPostingId,
-                                                      LocalDateTime applicationDate, String sortBy, String orderType, Pageable pageable);
+                                                      LocalDateTime applicationDate, String sortBy, String orderType,String fullName, String jobTitle, Boolean closed,
+             Long jobApplicationId , Pageable pageable);
 
     Page<JobApplicationEntity> filterAnyJobApplications(Long userId, ApplicationStatus status, Long jobPostingId,
-                                                     LocalDateTime applicationDate, String sortBy, String orderType, Pageable pageable);
+                                                     LocalDateTime applicationDate, String sortBy, String orderType,String fullName, String jobTitle, Boolean closed,
+                                                        Long jobApplicationId, Pageable pageable);
 
 
     JobApplicationEntity getByJobApplicationId(Long jobApplicationId);

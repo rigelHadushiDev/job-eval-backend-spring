@@ -20,6 +20,7 @@ public class RouteRoleWhitelist {
         WHITELIST.put("GET:/user/searchUserFullName", List.of("ADMIN", "RECRUITER"));
         WHITELIST.put("POST:/user/create", List.of("ADMIN"));
         WHITELIST.put("GET:/user/getUser", List.of("ADMIN", "RECRUITER"));
+        WHITELIST.put("GET:/user/privilegedUsers", List.of("ADMIN"));
 
         // EducationController routes
         WHITELIST.put("DELETE:/education", List.of("USER"));

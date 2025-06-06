@@ -2,6 +2,7 @@ package com.example.job_application_eval.service.impl;
 
 import com.example.job_application_eval.dtos.ChangePasswordDto;
 import com.example.job_application_eval.entities.UserEntity;
+import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.repository.UserRepository;
 import com.example.job_application_eval.responses.GeneralSuccessfulResp;
 import com.example.job_application_eval.service.AuthenticationService;
@@ -31,8 +32,13 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationService authService;
 
     @Override
-    public List<UserEntity> allUsers() {
-        return userRepository.findAll();
+    public Page<UserEntity> allUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<UserEntity> findUsersByRoles(List<Role> roles, Pageable pageable) {
+        return userRepository.findByRoleIn(roles, pageable);
     }
 
     @Override
@@ -138,7 +144,7 @@ public class UserServiceImpl implements UserService {
     public UserEntity save(UserEntity userEntity) {
 
         Optional<UserEntity> existingUserName = userRepository.findByUsername(userEntity.getUsername());
-        Optional<UserEntity> existingEmail = userRepository.findByUsername(userEntity.getUsername());
+        Optional<UserEntity> existingEmail = userRepository.findByEmail(userEntity.getEmail());
 
         if (existingUserName.isPresent()) {
             throw new ResponseStatusException(
@@ -158,6 +164,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity user = UserEntity.builder()
                 .email(userEntity.getEmail())
+                .username(userEntity.getUsername())
                 .password(hashedTemporaryPassword)
                 .lastname(userEntity.getLastname())
                 .firstname(userEntity.getFirstname())

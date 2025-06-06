@@ -36,12 +36,15 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final ApplicantEnglishLevelService applicantEnglishLevelService;
     private final FastApiRequestService fastApiRequestService;
 
-
-
     @Override
     @Transactional
     public JobApplicationEntity apply(Long jobPostingId) {
         JobPostingEntity jobPostingEntity = jobPostingService.findById(jobPostingId);
+
+        if (Boolean.TRUE.equals(jobPostingEntity.getClosed())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jobPostingClosed");
+        }
+
         UserEntity userEntity = utils.getCurrentUser();
 
         JobApplicationEntity previousApplication = jobApplicationRepository.findByUser_UserIdAndJobPosting_JobPostingId(
@@ -122,22 +125,24 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public Page<JobApplicationEntity> filterMyJobApplications(ApplicationStatus status, Long jobPostingId,
-                                                         LocalDateTime applicationDate, String sortBy, String orderType, Pageable pageable) {
+                                                         LocalDateTime applicationDate, String sortBy, String orderType, String fullName,String jobTitle, Boolean closed,
+                                                              Long jobApplicationId, Pageable pageable) {
 
         Long userId = utils.getCurrentUserId();
 
-        Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId,status,
-                jobPostingId, applicationDate, sortBy, orderType);
+        Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId,status,jobPostingId, applicationDate, sortBy,
+                orderType,fullName, jobTitle, closed, jobApplicationId);
 
         return jobApplicationRepository.findAll(spec, pageable);
     }
 
     @Override
     public Page<JobApplicationEntity> filterAnyJobApplications(Long userId, ApplicationStatus status, Long jobPostingId,
-                                                             LocalDateTime applicationDate, String sortBy, String orderType,Pageable pageable) {
+                                                             LocalDateTime applicationDate, String sortBy, String orderType,String fullName,String jobTitle, Boolean closed,
+                                                                 Long jobApplicationId ,Pageable pageable) {
 
         Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId, status,
-                jobPostingId, applicationDate, sortBy, orderType);
+                jobPostingId, applicationDate, sortBy, orderType,fullName, jobTitle, closed, jobApplicationId);
 
         return jobApplicationRepository.findAll(spec, pageable);
     }

@@ -30,8 +30,10 @@ public class ApplicantEnglishLevelController {
     @GetMapping("/getApplicantEnglishLevel")
     public ResponseEntity<ApplicantEnglishLevelDto> findApplicantEnglishLevelByUserId(@RequestParam Long userId) {
         ApplicantEnglishLevelEntity applicantEnglishLevelEntity = applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userId);
-        ApplicantEnglishLevelEntity createdUserLanguage = applicantEnglishLevelService.save(applicantEnglishLevelEntity);
-        return new ResponseEntity<>(mapper.mapTo(createdUserLanguage), HttpStatus.OK);
+        if (applicantEnglishLevelEntity == null) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(mapper.mapTo(applicantEnglishLevelEntity), HttpStatus.OK);
     }
 
     @PostMapping("create")

@@ -3,6 +3,7 @@ package com.example.job_application_eval.controller;
 import com.example.job_application_eval.dtos.ChangePasswordDto;
 import com.example.job_application_eval.dtos.UserDto;
 import com.example.job_application_eval.entities.UserEntity;
+import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.responses.GeneralSuccessfulResp;
 import com.example.job_application_eval.service.UserService;
@@ -14,6 +15,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -39,13 +42,29 @@ public class UserController {
     }
 
     @GetMapping("/listUsers")
-    public ResponseEntity<List<UserDto>> allUsers() {
-        List<UserEntity> userEntities = userService.allUsers();
-        List<UserDto> userDtos = userEntities.stream()
-                .map(userMapper::mapTo)
-                .collect(Collectors.toList());
-        return new  ResponseEntity<>( userDtos, HttpStatus.OK);
+    public ResponseEntity<Page<UserDto>> allUsers(
+            @PageableDefault(page = 0, size = 10, sort = "username", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<UserEntity> pageOfUsers = userService.allUsers(pageable);
+        Page<UserDto> pageOfUserDtos = pageOfUsers.map(userMapper::mapTo);
+        return ResponseEntity.ok(pageOfUserDtos);
     }
+
+    @GetMapping("/privilegedUsers")
+    public ResponseEntity<Page<UserDto>> getAdminsAndRecruiters(
+            @PageableDefault(
+                    page = 0,
+                    size = 10,
+                    sort = "username",
+                    direction = Sort.Direction.ASC
+            ) Pageable pageable
+    ) {
+        List<Role> rolesToFetch = List.of(Role.ADMIN, Role.RECRUITER);
+        Page<UserEntity> pageOfUsers = userService.findUsersByRoles(rolesToFetch, pageable);
+        Page<UserDto> pageOfUserDtos = pageOfUsers.map(userMapper::mapTo);
+        return ResponseEntity.ok(pageOfUserDtos);
+    }
+
 
     @PatchMapping("/changePassw")
     public ResponseEntity<GeneralSuccessfulResp> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto) {
