@@ -85,9 +85,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                         .toList())
                 .orElseGet(() -> List.of(new ApplicantDataRequestDto.SkillEntry("No skills", 0)));
 
-        // FOR TESTING
-        System.out.println("Skills being sent to FastAPI:");
-        skills.forEach(skill -> System.out.println(" - " + skill.getSkillName() + ": " + skill.getSkillProficiency()));
 
         applicantDataRequestDto.setSkills(skills);
 
