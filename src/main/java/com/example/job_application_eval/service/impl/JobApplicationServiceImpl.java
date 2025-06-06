@@ -85,7 +85,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                         .toList())
                 .orElseGet(() -> List.of(new ApplicantDataRequestDto.SkillEntry("No skills", 0)));
 
-
         applicantDataRequestDto.setSkills(skills);
 
         applicantDataRequestDto.setJobPostingId(jobPostingId);
