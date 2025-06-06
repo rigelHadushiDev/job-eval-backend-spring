@@ -36,6 +36,4 @@ public class SkillEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
 
-
-
 }
