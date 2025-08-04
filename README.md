@@ -1,4 +1,4 @@
-# CodePioneers Career Portal – Spring Boot Backend (API)
+# CodePioneers Career Portal – Spring Boot Backend
 
 **AI-Powered Recruitment Platform**  
 Applicants build their profiles by entering details about their education, work experience, projects, skills, and languages. After applying, an AI-powered FastAPI microservice acts as the initial screening layer, scoring each applicant in real time using advanced data science algorithms and a Sentence Transformer model to evaluate their suitability for the job, helping recruiters focus on the most promising candidates first.
