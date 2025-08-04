@@ -171,7 +171,7 @@ Unit and integration tests will be added in the next update.
 
 - **FastAPI Microservice (AI Scoring)**:  [job-eval-backend-fastapi](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
-- **React Frontend (User Interface)**:  [job-eval-frontend-react](https://github.com/rigelHadushiDev/job-eval-frontend-react) (work in progress)
+- **React Frontend (User Interface)**:  [job-eval-frontend-react](https://github.com/rigelHadushiDev/job-eval-frontend-react)
 
 ---
 
