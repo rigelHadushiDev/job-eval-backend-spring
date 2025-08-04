@@ -1,7 +1,8 @@
-# CodePioneers Career Portal – Spring Boot Backend
+# CodePioneers Career Portal – Spring Boot Backend\
 
-**AI-Powered Recruitment Platform**  
-Applicants build their profiles by entering details about their education, work experience, projects, skills, and languages. After applying, an AI-powered FastAPI microservice acts as the initial screening layer, scoring each applicant in real time using advanced data science algorithms and a Sentence Transformer model to evaluate their suitability for the job, helping recruiters focus on the most promising candidates first.
+CodePioneers' Career Portal is a demo recruitment platform where applicants submit detailed profile information. Applicants build their profiles by entering details about their education, work experience, projects, skills, and languages. After applying, an AI-powered FastAPI microservice acts as the initial screening layer, scoring each applicant in real time using advanced data science algorithms and a Sentence Transformer model to evaluate their suitability for the job, helping recruiters focus on the most promising candidates first. Recruiters can then review the top-matched applicants, decide who to shortlist, and invite selected candidates for interviews. They can also create, update, and close job postings directly from the platform.
+
+Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
 ---
 
@@ -20,14 +21,6 @@ Applicants build their profiles by entering details about their education, work 
 - [Running Tests](#running-tests)
 - [Project Structure](#project-structure)
 - [Author](#author)
-
----
-
-## Project Overview
-
-CodePioneers' Career Portal is a demo recruitment platform where applicants submit detailed profile information. An AI-powered FastAPI microservice acts as an initial filter, identifying the most promising candidates based on their suitability for each job. Recruiters can then review the top-matched applicants, decide who to shortlist, and invite selected candidates for interviews. They can also create, update, and close job postings directly from the platform.
-
-Fast API Microservice Github Repo: [job-eval-backend-fastapi ](https://github.com/rigelHadushiDev/job-eval-backend-fastapi)
 
 ---
 
