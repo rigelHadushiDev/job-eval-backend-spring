@@ -16,7 +16,8 @@ public class FastApiRequestServiceImpl implements FastApiRequestService {
     private final RestTemplate restTemplate;
 
     @Override
-    public <T> ResponseEntity<T> sendRequest(String url, HttpMethod httpMethod, Object payload, Class<T> responseType) {
+    public <T> ResponseEntity<T> sendRequest(String url, HttpMethod httpMethod,
+                                             Object payload, Class<T> responseType) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String jwtToken = (String) authentication.getCredentials();
