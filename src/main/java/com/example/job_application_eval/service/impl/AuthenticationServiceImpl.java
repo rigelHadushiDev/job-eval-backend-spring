@@ -196,7 +196,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    @Override
     public LogInResponse refreshAccessToken(String refreshToken) {
         if (!jwtService.validateRefreshToken(refreshToken)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "jwtExpired");
@@ -206,16 +205,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-
         UserDetails userDetails = org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
                 .authorities("ROLE_" + user.getRole().name())
                 .build();
 
-        String newAccessToken = jwtService.generateToken(userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", user.getRole().name());
+        extraClaims.put("userId", user.getUserId());
+
+        String newAccessToken = jwtService.generateToken(extraClaims, userDetails);
         long newExpiresIn = jwtService.getExpirationTime();
 
-        return new LogInResponse(user.getUserId(),newAccessToken, refreshToken, newExpiresIn, user.getRole().name(), user.isPasswordChanged());
+        return new LogInResponse(
+                user.getUserId(),
+                newAccessToken,
+                refreshToken,
+                newExpiresIn,
+                user.getRole().name(),
+                user.isPasswordChanged()
+        );
     }
+
 }
