@@ -2,6 +2,7 @@ package com.example.job_application_eval.service.impl;
 import com.example.job_application_eval.dtos.*;
 import com.example.job_application_eval.entities.enums.ProficiencyLevel;
 import com.example.job_application_eval.mappers.Mapper;
+import com.example.job_application_eval.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.job_application_eval.config.utils.Utils;
 import com.example.job_application_eval.entities.*;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class JobApplicationServiceImpl implements JobApplicationService {
 
     private final JobApplicationRepository jobApplicationRepository;
+    private final UserRepository userRepository;
     private final JobPostingService jobPostingService;
     private final Utils utils;
     private final EmailService emailService;
@@ -142,9 +144,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         JobApplicationEntity jobApplicationEntity = jobApplicationMapper.mapFrom(jobApplicationDto);
 
         JobPostingEntity jobPostingEntity = jobApplicationEntity.getJobPosting();
-        UserEntity user = jobApplicationEntity.getUser();
+        Long userId = jobApplicationEntity.getUser().getUserId();
+        UserEntity applicantUserEntity = userRepository.findUserByUserId(userId);
+
         jobApplicationEntity.setStatus(status);
-        sendStatusUpdateEmail(user,  jobPostingEntity.getJobTitle(), status);
+        sendStatusUpdateEmail(applicantUserEntity,  jobPostingEntity.getJobTitle(), status);
 
          JobApplicationEntity statusChangedApplication =  jobApplicationRepository.save(jobApplicationEntity);
         return jobApplicationMapper.mapTo(statusChangedApplication);
@@ -215,6 +219,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             return;
         }
         try {
+            System.out.println(user.getEmail());
+            System.out.println( "TESTTTTT");
             emailService.sendEmail(user.getEmail(), subject, htmlMessage);
         } catch (MessagingException e) {
             e.printStackTrace();

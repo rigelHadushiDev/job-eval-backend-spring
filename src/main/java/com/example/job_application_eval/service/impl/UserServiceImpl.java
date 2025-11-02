@@ -9,6 +9,7 @@ import com.example.job_application_eval.repository.UserRepository;
 import com.example.job_application_eval.responses.GeneralSuccessfulResp;
 import com.example.job_application_eval.service.AuthenticationService;
 import com.example.job_application_eval.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,74 +75,61 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto deleteUser(Long userId) {
-        UserEntity currentUser = userRepository.findUserByUserId(userId).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "userNotFound"));
+        UserEntity currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "userNotFound"));
+
         userRepository.delete(currentUser);
         return userMapper.mapTo(currentUser);
     }
 
     @Override
-    public UserDto editCurrUserData(UserDto userDto) {
+    public UserDto editCurrUserData(UserDto patch) {
 
-        UserEntity userEntity = userMapper.mapFrom(userDto);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "userNotFound"));
 
-        UserDto currentUserDto = getCurrentUser();
-        UserEntity currentUser = userMapper.mapFrom(currentUserDto);
+        boolean fullNameChanged = false;
 
-        AtomicBoolean fullNameChanged = new AtomicBoolean(false);
-
-        Optional.ofNullable(userEntity.getFirstname()).ifPresent(newFirstName -> {
-            if (!newFirstName.equals(currentUser.getFirstname())) {
-                currentUser.setFirstname(newFirstName);
-                fullNameChanged.set(true);
-            }
-        });
-
-        Optional.ofNullable(userEntity.getLastname()).ifPresent(newLastName -> {
-            if (!newLastName.equals(currentUser.getLastname())) {
-                currentUser.setLastname(newLastName);
-                fullNameChanged.set(true);
-            }
-        });
-
-        if (fullNameChanged.get()) {
-            String updatedFirst = Optional.ofNullable(currentUser.getFirstname()).orElse("");
-            String updatedLast = Optional.ofNullable(currentUser.getLastname()).orElse("");
-            currentUser.setFullName((updatedFirst + " " + updatedLast).trim());
+        if (patch.getFirstname() != null && !patch.getFirstname().equals(currentUser.getFirstname())) {
+            currentUser.setFirstname(patch.getFirstname());
+            fullNameChanged = true;
+        }
+        if (patch.getLastname() != null && !patch.getLastname().equals(currentUser.getLastname())) {
+            currentUser.setLastname(patch.getLastname());
+            fullNameChanged = true;
+        }
+        if (fullNameChanged) {
+            String first = Optional.ofNullable(currentUser.getFirstname()).orElse("");
+            String last  = Optional.ofNullable(currentUser.getLastname()).orElse("");
+            currentUser.setFullName((first + " " + last).trim());
         }
 
-        Optional.ofNullable(userEntity.getUsername()).ifPresent(newUsername -> {
-            List<UserEntity> usersWithSameUsername = userRepository.findAllByUsername(newUsername);
+        if (patch.getGender() != null) {
+            currentUser.setGender(patch.getGender());
+        }
+        if (patch.getBirthdate() != null) {
+            currentUser.setBirthdate(patch.getBirthdate());
+        }
+        if (patch.getMobileNumber() != null) {
+            currentUser.setMobileNumber(patch.getMobileNumber());
+        }
 
-            if (usersWithSameUsername.size() > 1) {
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
-                        "usernameTaken"
-                );
+
+        if (patch.getUsername() != null && !patch.getUsername().equals(currentUser.getUsername())) {
+            List<UserEntity> same = userRepository.findAllByUsername(patch.getUsername());
+            boolean takenByAnother = same.stream()
+                    .anyMatch(u -> !u.getUserId().equals(currentUser.getUserId()));
+            if (takenByAnother) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "usernameTaken");
             }
+            currentUser.setUsername(patch.getUsername());
+        }
 
-            if (usersWithSameUsername.size() == 1) {
-                UserEntity existingUser = usersWithSameUsername.get(0);
-                if (!existingUser.getUserId().equals(currentUser.getUserId())) {
-                    throw new ResponseStatusException(
-                            HttpStatus.CONFLICT,
-                            "usernameTaken"
-                    );
-                }
-            }
-            currentUser.setUsername(newUsername);
-        });
 
-        Optional.ofNullable(userEntity.getUsername()).ifPresent(currentUser::setUsername);
-        Optional.ofNullable(userEntity.getGender()).ifPresent(currentUser::setGender);
-        Optional.ofNullable(userEntity.getBirthdate()).ifPresent(currentUser::setBirthdate);
-        Optional.ofNullable(userEntity.getMobileNumber()).ifPresent(currentUser::setMobileNumber);
-        Optional.ofNullable(userEntity.getFullName()).ifPresent(currentUser::setFullName);
-
-        UserEntity savedUser =  userRepository.save(currentUser);
-        return userMapper.mapTo(savedUser);
+        UserEntity saved = userRepository.save(currentUser);
+        return userMapper.mapTo(saved);
     }
-
 
     @Override
     public Page<UserDto> searchUsersByFullName(String fullName, Pageable pageable) {
