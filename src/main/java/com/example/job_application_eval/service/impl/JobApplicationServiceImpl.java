@@ -1,8 +1,10 @@
 package com.example.job_application_eval.service.impl;
+import com.example.job_application_eval.dtos.*;
+import com.example.job_application_eval.entities.enums.ProficiencyLevel;
+import com.example.job_application_eval.mappers.Mapper;
+import com.example.job_application_eval.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.job_application_eval.config.utils.Utils;
-import com.example.job_application_eval.dtos.ApplicantDataRequestDto;
-import com.example.job_application_eval.dtos.ApplicantScoreResponseDto;
 import com.example.job_application_eval.entities.*;
 import com.example.job_application_eval.entities.enums.ApplicationStatus;
 import jakarta.mail.MessagingException;
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class JobApplicationServiceImpl implements JobApplicationService {
 
     private final JobApplicationRepository jobApplicationRepository;
+    private final UserRepository userRepository;
     private final JobPostingService jobPostingService;
     private final Utils utils;
     private final EmailService emailService;
@@ -35,11 +38,20 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final SkillService skillService;
     private final ApplicantEnglishLevelService applicantEnglishLevelService;
     private final FastApiRequestService fastApiRequestService;
+    private final Mapper<JobApplicationEntity, JobApplicationHighRoleDto> highRolemapper;
+    private final Mapper<JobApplicationEntity, JobApplicationDto> jobApplicationMapper;
+    private final Mapper<JobPostingEntity, JobPostingDto> jobPostingMapper;
+    private final Mapper<EducationEntity, EducationDto> educationMapper;
+    private final Mapper<ApplicantEnglishLevelEntity, ApplicantEnglishLevelDto> applicationEnglishMapper;
+    private final Mapper<SkillEntity, SkillDto> skillsMapper;
+
 
     @Override
     @Transactional
-    public JobApplicationEntity apply(Long jobPostingId) {
-        JobPostingEntity jobPostingEntity = jobPostingService.findById(jobPostingId);
+    public JobApplicationDto apply(Long jobPostingId) {
+
+        JobPostingDto jobPostingDto = jobPostingService.findById(jobPostingId);
+        JobPostingEntity jobPostingEntity = jobPostingMapper.mapFrom(jobPostingDto);
 
         if (Boolean.TRUE.equals(jobPostingEntity.getClosed())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jobPostingClosed");
@@ -63,7 +75,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         applicantDataRequestDto.setUserId(userEntity.getUserId());
         applicantDataRequestDto.setUsername(userEntity.getUsername());
 
-        List<EducationEntity> eduEntities = educationService.findEducationsByUserId(userEntity.getUserId());
+        List<EducationDto> eduDtos = educationService.findEducationsByUserId(userEntity.getUserId());
+        List<EducationEntity> eduEntities = eduDtos.stream()
+                .map(educationMapper::mapFrom)
+                .toList();
+
         List<ApplicantDataRequestDto.EducationLevelEntry> educationLevels = Optional.ofNullable(eduEntities)
                 .filter(eduList -> !eduList.isEmpty())
                 .map(eduList -> eduList.stream()
@@ -72,13 +88,19 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .orElseGet(() -> List.of(new ApplicantDataRequestDto.EducationLevelEntry(null)));
         applicantDataRequestDto.setEducationLevel(educationLevels);
 
-        Optional<ApplicantEnglishLevelEntity> englishLevelOptional = Optional.ofNullable(applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userEntity.getUserId()));
-        applicantDataRequestDto.setEnglishLevel(englishLevelOptional
+        String level = String.valueOf(Optional
+                .ofNullable(applicantEnglishLevelService.findApplicantEnglishLevelByUserId(userEntity.getUserId()))
+                .map(applicationEnglishMapper::mapFrom)
                 .map(ApplicantEnglishLevelEntity::getProficiencyLevel)
                 .orElse(null));
 
-        List<SkillEntity> skillEntities = skillService.findSkillsByUserId(userEntity.getUserId());
-        List<ApplicantDataRequestDto.SkillEntry> skills = Optional.ofNullable(skillEntities)
+        applicantDataRequestDto.setEnglishLevel(ProficiencyLevel.valueOf(level));
+
+        List<SkillDto> skillDto= skillService.findSkillsByUserId(userEntity.getUserId());
+        List<SkillEntity> skillEntities = skillDto.stream()
+                .map(skillsMapper::mapFrom)
+                .toList();
+        List<ApplicantDataRequestDto.SkillEntry> skills = Optional.of(skillEntities)
                 .filter(skillList -> !skillList.isEmpty())
                 .map(skillList -> skillList.stream()
                         .map(skill -> new ApplicantDataRequestDto.SkillEntry(skill.getSkillName(), skill.getSkillProficiency()))
@@ -111,21 +133,29 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "applyApiFailed");
         }
-        return jobApplicationRepository.save(jobApplicationEntity);
+        JobApplicationEntity jobApplication = jobApplicationRepository.save(jobApplicationEntity);
+        return jobApplicationMapper.mapTo(jobApplication);
     }
 
     @Override
-    public JobApplicationEntity changeStatus(Long jobApplicationId, ApplicationStatus status) {
-        JobApplicationEntity jobApplicationEntity =  getByJobApplicationId(jobApplicationId);
+    public JobApplicationDto changeStatus(Long jobApplicationId, ApplicationStatus status) {
+
+        JobApplicationDto jobApplicationDto =  getByJobApplicationId(jobApplicationId);
+        JobApplicationEntity jobApplicationEntity = jobApplicationMapper.mapFrom(jobApplicationDto);
+
         JobPostingEntity jobPostingEntity = jobApplicationEntity.getJobPosting();
-        UserEntity user = jobApplicationEntity.getUser();
+        Long userId = jobApplicationEntity.getUser().getUserId();
+        UserEntity applicantUserEntity = userRepository.findUserByUserId(userId);
+
         jobApplicationEntity.setStatus(status);
-        sendStatusUpdateEmail(user,  jobPostingEntity.getJobTitle(), status);
-        return jobApplicationRepository.save(jobApplicationEntity);
+        sendStatusUpdateEmail(applicantUserEntity,  jobPostingEntity.getJobTitle(), status);
+
+         JobApplicationEntity statusChangedApplication =  jobApplicationRepository.save(jobApplicationEntity);
+        return jobApplicationMapper.mapTo(statusChangedApplication);
     }
 
     @Override
-    public Page<JobApplicationEntity> filterMyJobApplications(ApplicationStatus status, Long jobPostingId,
+    public Page<JobApplicationDto> filterMyJobApplications(ApplicationStatus status, Long jobPostingId,
                                                          LocalDateTime applicationDate, String sortBy, String orderType, String fullName,String jobTitle, Boolean closed,
                                                               Long jobApplicationId, Pageable pageable) {
 
@@ -134,24 +164,27 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId,status,jobPostingId, applicationDate, sortBy,
                 orderType,fullName, jobTitle, closed, jobApplicationId);
 
-        return jobApplicationRepository.findAll(spec, pageable);
+        Page<JobApplicationEntity> jobApplicationEntities =  jobApplicationRepository.findAll(spec, pageable);
+        return jobApplicationEntities.map(jobApplicationMapper::mapTo);
     }
 
     @Override
-    public Page<JobApplicationEntity> filterAnyJobApplications(Long userId, ApplicationStatus status, Long jobPostingId,
+    public Page<JobApplicationHighRoleDto> filterAnyJobApplications(Long userId, ApplicationStatus status, Long jobPostingId,
                                                              LocalDateTime applicationDate, String sortBy, String orderType,String fullName,String jobTitle, Boolean closed,
                                                                  Long jobApplicationId ,Pageable pageable) {
 
         Specification<JobApplicationEntity> spec = JobApplicationSpecifications.buildSpecification(userId, status,
                 jobPostingId, applicationDate, sortBy, orderType,fullName, jobTitle, closed, jobApplicationId);
 
-        return jobApplicationRepository.findAll(spec, pageable);
+        Page<JobApplicationEntity> jobApplications = jobApplicationRepository.findAll(spec, pageable);
+        return jobApplications.map(highRolemapper::mapTo);
     }
 
     @Override
-    public JobApplicationEntity getByJobApplicationId(Long jobApplicationId){
-        return jobApplicationRepository.findById(jobApplicationId)
+    public JobApplicationDto getByJobApplicationId(Long jobApplicationId){
+        JobApplicationEntity jobApplicationEntity = jobApplicationRepository.findById(jobApplicationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application not found"));
+        return jobApplicationMapper.mapTo(jobApplicationEntity);
     }
 
 
@@ -186,6 +219,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             return;
         }
         try {
+            System.out.println(user.getEmail());
+            System.out.println( "TESTTTTT");
             emailService.sendEmail(user.getEmail(), subject, htmlMessage);
         } catch (MessagingException e) {
             e.printStackTrace();

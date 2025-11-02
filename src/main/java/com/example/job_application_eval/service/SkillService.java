@@ -1,19 +1,20 @@
 package com.example.job_application_eval.service;
 
+import com.example.job_application_eval.dtos.SkillDto;
 import com.example.job_application_eval.entities.SkillEntity;
 
 import java.util.List;
 
 public interface SkillService {
 
-    SkillEntity deleteSkill(Long skillId);
+    SkillDto deleteSkill(Long skillId);
 
-    List<SkillEntity> findSkillsByUserId(Long userId);
+    List<SkillDto> findSkillsByUserId(Long userId);
 
-    SkillEntity editSkillEntity(SkillEntity SkillEntity);
+    SkillDto editSkillEntity(SkillDto skillDto);
 
-    SkillEntity save(SkillEntity SkillEntity);
+    SkillDto save(SkillDto skillDto);
 
-    SkillEntity findSkillById(Long skillId);
+    SkillDto findSkillById(Long skillId);
 
 }

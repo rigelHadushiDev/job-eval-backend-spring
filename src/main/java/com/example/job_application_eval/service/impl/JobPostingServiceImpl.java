@@ -1,10 +1,10 @@
 package com.example.job_application_eval.service.impl;
 
-
-import com.example.job_application_eval.config.utils.Utils;
+import com.example.job_application_eval.dtos.JobPostingDto;
 import com.example.job_application_eval.dtos.JobPostingFastApiDto;
 import com.example.job_application_eval.entities.JobPostingEntity;
 import com.example.job_application_eval.entities.enums.WorkingType;
+import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.repository.JobPostingRepository;
 import com.example.job_application_eval.service.FastApiRequestService;
 import com.example.job_application_eval.service.JobPostingService;
@@ -23,23 +23,24 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JobPostingServiceImpl  implements JobPostingService {
 
-    private final Utils utils;
     private final JobPostingRepository jobPostingRepository;
     private final FastApiRequestService fastApiRequestService;
+    private final Mapper<JobPostingEntity, JobPostingDto> mapper;
 
     @Override
     @Transactional
-    public JobPostingEntity save(JobPostingEntity jobPostingEntity) {
+    public JobPostingDto save(JobPostingDto jobPostingDto) {
 
+        JobPostingEntity jobPostingEntity = mapper.mapFrom(jobPostingDto);
         verifyLocationForWorkingType(jobPostingEntity);
 
         JobPostingEntity savedJobPosting = jobPostingRepository.save(jobPostingEntity);
         String fastApiUrl = "http://localhost:8000/job-posting/";
-        JobPostingFastApiDto jobPostingDto = getJobPostingFastApiDto(savedJobPosting);
+        JobPostingFastApiDto microserviceRequestDto = getJobPostingFastApiDto(savedJobPosting);
 
         try {
             ResponseEntity<String> response = fastApiRequestService.sendRequest(
-                    fastApiUrl, HttpMethod.POST, jobPostingDto, String.class);
+                    fastApiUrl, HttpMethod.POST, microserviceRequestDto, String.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveJobPostingFailed");
@@ -47,40 +48,41 @@ public class JobPostingServiceImpl  implements JobPostingService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveJobPostingFailed");
         }
-        return savedJobPosting;
+        return mapper.mapTo(savedJobPosting);
     }
 
     @Override
-    public JobPostingEntity findById(Long jobPostingId) {
-        return jobPostingRepository.findById(jobPostingId)
+    public JobPostingDto findById(Long jobPostingId) {
+
+        JobPostingEntity jobPostingEntity = jobPostingRepository.findById(jobPostingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "jobPostingNotFound"));
+        return mapper.mapTo(jobPostingEntity);
+
     }
 
     @Override
-    public Page<JobPostingEntity> findAllJobPostings(Boolean closed, Pageable pageable) {
-        Page<JobPostingEntity> jobEntities;
+    public Page<JobPostingDto> findAllJobPostings(Boolean closed, Pageable pageable) {
+        Page<JobPostingEntity> entities =
+                (closed == null)
+                        ? jobPostingRepository.findAll(pageable)
+                        : jobPostingRepository.findByClosed(closed, pageable);
 
-        if (closed == null) {
-            jobEntities = jobPostingRepository.findAll(pageable);
-        } else {
-            jobEntities = jobPostingRepository.findByClosed(closed, pageable);
-        }
-
-        return jobEntities;
+        return entities.map(mapper::mapTo);
     }
 
-
-
     @Override
-    public Page<JobPostingEntity> searchByJobTitle(String title, Pageable pageable) {
-        return jobPostingRepository.findByJobTitleContainingIgnoreCase(title, pageable);
+    public Page<JobPostingDto> searchByJobTitle(String title, Pageable pageable) {
+        Page<JobPostingEntity> entities = jobPostingRepository.findByJobTitleContainingIgnoreCase(title, pageable);
+        return entities.map(mapper::mapTo);
     }
 
 
     @Override
     @Transactional
-    public JobPostingEntity edit(JobPostingEntity jobPostingEntity) {
-        findById(jobPostingEntity.getJobPostingId());
+    public JobPostingDto edit(JobPostingDto jobPostingDto) {
+
+        JobPostingEntity jobPostingEntity = mapper.mapFrom(jobPostingDto);
+        findById(jobPostingDto.getJobPostingId());
 
         verifyLocationForWorkingType(jobPostingEntity);
         JobPostingEntity edited = jobPostingRepository.save(jobPostingEntity);
@@ -96,7 +98,7 @@ public class JobPostingServiceImpl  implements JobPostingService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editJobPostingFailed");
         }
-        return edited;
+        return mapper.mapTo(edited);
     }
 
     private void verifyLocationForWorkingType(JobPostingEntity jobPostingEntity) {
@@ -117,8 +119,9 @@ public class JobPostingServiceImpl  implements JobPostingService {
 
     @Override
     @Transactional
-    public JobPostingEntity delete(Long jobPostingId) {
-        JobPostingEntity deletedJobPosting = findById(jobPostingId);
+    public JobPostingDto delete(Long jobPostingId) {
+
+        JobPostingDto deletedJobPosting = findById(jobPostingId);
         jobPostingRepository.deleteById(jobPostingId);
 
         String fastApiUrl = "http://localhost:8000/deleteJobPosting/" + jobPostingId;

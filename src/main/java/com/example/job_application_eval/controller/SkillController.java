@@ -20,42 +20,36 @@ import java.util.stream.Collectors;
 public class SkillController {
 
     private final SkillService skillService;
-    private final Mapper<SkillEntity, SkillDto> mapper;
     
 
     @DeleteMapping()
     public ResponseEntity<SkillDto> deleteSkill(@RequestParam Long skillId){
-        SkillEntity deletedSkill = skillService.deleteSkill(skillId);
-        return new ResponseEntity<>( mapper.mapTo(deletedSkill), HttpStatus.OK);
+        SkillDto deletedSkill = skillService.deleteSkill(skillId);
+        return ResponseEntity.ok(deletedSkill);
     }
 
     @GetMapping("/userSkills")
     public ResponseEntity<List<SkillDto>> findSkillsByUserId(@RequestParam Long userId) {
-        List<SkillEntity> skillEntities = skillService.findSkillsByUserId(userId);
-        List<SkillDto> skillDto = skillEntities.stream()
-                .map(mapper::mapTo)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(skillDto, HttpStatus.OK);
+        List<SkillDto> skills = skillService.findSkillsByUserId(userId);
+        return ResponseEntity.ok(skills);
     }
 
     @GetMapping("/getSkill")
     public ResponseEntity<SkillDto> getSkillById(@RequestParam Long skillId){
-        SkillEntity extractedSkill = skillService.findSkillById(skillId);
-        return new ResponseEntity<>( mapper.mapTo(extractedSkill), HttpStatus.OK);
+        SkillDto extractedSkill = skillService.findSkillById(skillId);
+        return ResponseEntity.ok(extractedSkill);
     }
 
 
     @PostMapping("create")
     public ResponseEntity<SkillDto> createSkill(@Valid @RequestBody SkillDto skillDto){
-        SkillEntity skillEntity = mapper.mapFrom(skillDto);
-        SkillEntity createdSkill = skillService.save(skillEntity);
-        return new ResponseEntity<>( mapper.mapTo(createdSkill), HttpStatus.OK);
+        SkillDto createdSkill = skillService.save(skillDto);
+        return ResponseEntity.ok(createdSkill);
     }
 
     @PutMapping("edit")
     public ResponseEntity<SkillDto> editSkill(@Validated(OnEditSkills.class) @RequestBody SkillDto skillDto){
-        SkillEntity skillEntity = mapper.mapFrom(skillDto);
-        SkillEntity updatedSkill = skillService.editSkillEntity(skillEntity);
-        return new ResponseEntity<>( mapper.mapTo(updatedSkill), HttpStatus.OK);
+        SkillDto updatedSkill = skillService.editSkillEntity(skillDto);
+        return ResponseEntity.ok(updatedSkill);
     }
 }
