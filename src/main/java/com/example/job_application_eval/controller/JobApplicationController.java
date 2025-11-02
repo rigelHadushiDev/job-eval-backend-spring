@@ -9,6 +9,7 @@ import com.example.job_application_eval.service.JobApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -19,18 +20,15 @@ import java.time.LocalDateTime;
 public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
-    private final Mapper<JobApplicationEntity, JobApplicationDto> userMapper;
-    private final Mapper<JobApplicationEntity, JobApplicationHighRoleDto> highRolemapper;
-
 
     @PostMapping("apply")
-    public JobApplicationDto apply(@RequestParam("jobPostingId") Long jobPostingId) {
-        JobApplicationEntity jobApplicationEntity = jobApplicationService.apply(jobPostingId);
-        return userMapper.mapTo(jobApplicationEntity);
+    public ResponseEntity<JobApplicationDto> apply(@RequestParam("jobPostingId") Long jobPostingId) {
+        JobApplicationDto jobApplicationDto = jobApplicationService.apply(jobPostingId);
+        return ResponseEntity.ok(jobApplicationDto);
     }
 
     @GetMapping("/myApplicationFilter")
-    public Page<JobApplicationDto> getFilteredJobApplications(
+    public ResponseEntity<Page<JobApplicationDto>> getFilteredJobApplications(
             @RequestParam(required = false) ApplicationStatus status,
             @RequestParam(required = false) Long jobPostingId,
             @RequestParam(required = false) LocalDateTime applicationDate,
@@ -42,12 +40,13 @@ public class JobApplicationController {
             @RequestParam(required = false) Long jobApplicationId,
             Pageable pageable) {
 
-        return jobApplicationService.filterMyJobApplications( status, jobPostingId, applicationDate,sortBy,orderBy,fullName, jobTitle,closed,jobApplicationId ,pageable)
-                .map(userMapper::mapTo);
+
+        Page<JobApplicationDto> jobApplications = jobApplicationService.filterMyJobApplications( status, jobPostingId, applicationDate,sortBy,orderBy,fullName, jobTitle,closed,jobApplicationId ,pageable);
+        return ResponseEntity.ok(jobApplications);
     }
 
     @GetMapping("/anyApplicationFilter")
-    public Page<JobApplicationHighRoleDto> getFilteredJobApplications(
+    public ResponseEntity<Page<JobApplicationHighRoleDto>> getFilteredJobApplications(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) ApplicationStatus status,
             @RequestParam(required = false) Long jobPostingId,
@@ -60,13 +59,14 @@ public class JobApplicationController {
             @RequestParam(required = false) Long jobApplicationId,
             Pageable pageable) {
 
-        return jobApplicationService.filterAnyJobApplications(userId, status, jobPostingId, applicationDate, sortBy,orderBy, fullName,jobTitle,closed ,jobApplicationId, pageable)
-                .map(highRolemapper::mapTo);
+        Page<JobApplicationHighRoleDto> highRoleJobApplication =  jobApplicationService.filterAnyJobApplications(userId, status, jobPostingId, applicationDate, sortBy,orderBy, fullName,jobTitle,closed ,jobApplicationId, pageable);
+        return ResponseEntity.ok(highRoleJobApplication);
+
     }
 
     @PatchMapping("changeStatus")
-    public JobApplicationDto changeStatus(@RequestParam("jobApplicationId") Long jobApplicationId,@RequestParam("status") ApplicationStatus status) {
-        JobApplicationEntity jobApplicationEntity = jobApplicationService.changeStatus(jobApplicationId, status);
-        return userMapper.mapTo(jobApplicationEntity);
+    public ResponseEntity<JobApplicationDto> changeStatus(@RequestParam("jobApplicationId") Long jobApplicationId,@RequestParam("status") ApplicationStatus status) {
+        JobApplicationDto jobApplicationDto = jobApplicationService.changeStatus(jobApplicationId, status);
+        return ResponseEntity.ok(jobApplicationDto);
     }
 }

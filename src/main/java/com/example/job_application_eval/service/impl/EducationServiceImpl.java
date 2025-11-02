@@ -1,10 +1,12 @@
 package com.example.job_application_eval.service.impl;
 
 import com.example.job_application_eval.config.utils.Utils;
+import com.example.job_application_eval.dtos.EducationDto;
 import com.example.job_application_eval.entities.EducationEntity;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.enums.EducationLevel;
 import com.example.job_application_eval.entities.enums.Role;
+import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.repository.EducationRepository;
 import com.example.job_application_eval.service.EducationService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,44 +23,58 @@ public class EducationServiceImpl implements EducationService {
 
     private final EducationRepository educationRepository;
     private final Utils utils;
+    private final Mapper<EducationEntity, EducationDto> educationMapper;
 
     @Override
-    public EducationEntity deleteEducation(Long educationId) {
-        EducationEntity currentEducation = findEducationById(educationId);
-        utils.assertCurrentUserOwns(currentEducation.getUser().getUserId());
+    public EducationDto deleteEducation(Long educationId) {
+
+        EducationDto currentEducation = findEducationById(educationId);
+        EducationEntity educationEntity = educationMapper.mapFrom(currentEducation);
+        utils.assertCurrentUserOwns(educationEntity.getUser().getUserId());
         educationRepository.deleteById(educationId);
-        return currentEducation;
+        return educationMapper.mapTo(educationEntity);
     }
 
     @Override
-    public List<EducationEntity> findEducationsByUserId(Long userId) {
+    public List<EducationDto> findEducationsByUserId(Long userId) {
+
         UserEntity currentUser = utils.getCurrentUser();
+
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewEducations");
         }
-        return educationRepository.findByUser_UserId(userId);
+
+        List<EducationEntity> educationEntities = educationRepository.findByUser_UserId(userId);
+        return educationEntities.stream()
+                .map(educationMapper::mapTo)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public EducationEntity editEducation(EducationEntity educationEntity) {
+    public EducationDto editEducation(EducationDto educationDto) {
 
+        EducationEntity educationEntity = educationMapper.mapFrom(educationDto);
         EducationEntity currentEducation =  educationRepository.findByEducationId(educationEntity.getEducationId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "educationNotFound"));
 
         utils.assertCurrentUserOwns(currentEducation.getUser().getUserId());
-        return educationRepository.save(educationEntity);
+        EducationEntity editedEducation =   educationRepository.save(educationEntity);
+        return educationMapper.mapTo(editedEducation);
     }
 
     @Override
-    public EducationEntity save(EducationEntity educationEntity) {
+    public EducationDto save(EducationDto educationDto) {
 
+        EducationEntity educationEntity = educationMapper.mapFrom(educationDto);
         UserEntity currentUser = utils.getCurrentUser();
         educationEntity.setUser(currentUser);
-        return educationRepository.save(educationEntity);
+        EducationEntity savedEducation =  educationRepository.save(educationEntity);
+        return educationMapper.mapTo(savedEducation);
     }
 
     @Override
-    public EducationEntity findEducationById(Long educationId) {
+    public EducationDto findEducationById(Long educationId) {
+
        EducationEntity educationEntity =  educationRepository.findByEducationId(educationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "educationNotFound"));
 
@@ -65,7 +82,7 @@ public class EducationServiceImpl implements EducationService {
         if(!currentUser.getUserId().equals(educationEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewEducation");
         }
-        return educationEntity;
+        return educationMapper.mapTo(educationEntity);
     }
 
 

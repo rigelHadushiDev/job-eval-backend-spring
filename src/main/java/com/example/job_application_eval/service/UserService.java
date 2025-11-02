@@ -3,7 +3,6 @@ package com.example.job_application_eval.service;
 
 import com.example.job_application_eval.dtos.ChangePasswordDto;
 import com.example.job_application_eval.dtos.UserDto;
-import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.enums.Role;
 import com.example.job_application_eval.responses.GeneralSuccessfulResp;
 import org.springframework.data.domain.Page;
@@ -14,23 +13,23 @@ import java.util.List;
 public interface UserService {
 
 
-    Page<UserEntity> allUsers(Pageable pageable);
+    Page<UserDto> allUsers(Pageable pageable);
 
-    Page<UserEntity> findUsersByRoles(List<Role> roles, Pageable pageable);
+    Page<UserDto> findUsersByRoles(List<Role> roles, Pageable pageable);
 
-    UserEntity getCurrentUserEntity();
+    UserDto getCurrentUser();
 
     GeneralSuccessfulResp changeUserPassword(ChangePasswordDto changePasswordDto);
 
-    UserEntity deleteYourUserAccount();
+    UserDto deleteYourUserAccount();
 
-    UserEntity deleteUser(Long userId);
+    UserDto deleteUser(Long userId);
 
-    UserEntity editCurrUserData(UserEntity userEntity);
+    UserDto editCurrUserData(UserDto userDto);
 
-    Page<UserEntity> searchUsersByFullName(String fullName, Pageable pageable);
+    Page<UserDto> searchUsersByFullName(String fullName, Pageable pageable);
 
-    UserEntity save(UserEntity userEntity);
+    UserDto save(UserDto userDto);
 
-    UserEntity getUserByUserName(String username);
+    UserDto getUserByUserName(String username);
 }

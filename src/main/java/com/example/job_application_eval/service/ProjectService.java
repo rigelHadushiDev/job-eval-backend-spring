@@ -1,18 +1,19 @@
 package com.example.job_application_eval.service;
 
+import com.example.job_application_eval.dtos.ProjectDto;
 import com.example.job_application_eval.entities.ProjectEntity;
 
 import java.util.List;
 
 public interface ProjectService {
 
-    ProjectEntity deleteProjectId(Long userLanguageId);
+    ProjectDto deleteProjectId(Long userLanguageId);
 
-    List<ProjectEntity> findProjectsByUserId(Long userId);
+    List<ProjectDto> findProjectsByUserId(Long userId);
 
-    ProjectEntity editProject(ProjectEntity projectEntity);
+    ProjectDto editProject(ProjectDto projectDto);
 
-    ProjectEntity save(ProjectEntity projectEntity);
+    ProjectDto save(ProjectDto projectDto);
 
-    ProjectEntity findProjectById(Long projectId);
+    ProjectDto findProjectById(Long projectId);
 }
