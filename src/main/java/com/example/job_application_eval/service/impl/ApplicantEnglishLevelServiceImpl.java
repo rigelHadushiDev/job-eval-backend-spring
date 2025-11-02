@@ -1,9 +1,11 @@
 package com.example.job_application_eval.service.impl;
 
 import com.example.job_application_eval.config.utils.Utils;
+import com.example.job_application_eval.dtos.ApplicantEnglishLevelDto;
 import com.example.job_application_eval.entities.UserEntity;
 import com.example.job_application_eval.entities.ApplicantEnglishLevelEntity;
 import com.example.job_application_eval.entities.enums.Role;
+import com.example.job_application_eval.mappers.Mapper;
 import com.example.job_application_eval.repository.ApplicantEnglishLevelRepository;
 import com.example.job_application_eval.service.ApplicantEnglishLevelService;
 import lombok.RequiredArgsConstructor;
@@ -19,39 +21,49 @@ public class ApplicantEnglishLevelServiceImpl implements ApplicantEnglishLevelSe
 
     private final ApplicantEnglishLevelRepository repository;
     private final Utils utils;
+    private final Mapper<ApplicantEnglishLevelEntity, ApplicantEnglishLevelDto> mapper;
 
     @Override
-    public ApplicantEnglishLevelEntity deleteApplicantEnglishLevel(Long applicantEnglishLevelId) {
+    public ApplicantEnglishLevelDto deleteApplicantEnglishLevel(Long applicantEnglishLevelId) {
+
         ApplicantEnglishLevelEntity currentUserLanguage = findApplicantEnglishLevelById(applicantEnglishLevelId);
         utils.assertCurrentUserOwns(currentUserLanguage.getUser().getUserId());
         repository.deleteById(applicantEnglishLevelId);
-        return currentUserLanguage;
+        return mapper.mapTo(currentUserLanguage);
     }
 
     @Override
-    public ApplicantEnglishLevelEntity findApplicantEnglishLevelByUserId(Long userId) {
+    public ApplicantEnglishLevelDto findApplicantEnglishLevelByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
-        if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
+        if (!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewApplicantEnglishLevel");
         }
-        return repository.findByUser_UserId(userId);
+
+        ApplicantEnglishLevelEntity found = repository.findByUser_UserId(userId);
+        return (found == null) ? null : mapper.mapTo(found);
     }
 
     @Override
-    public ApplicantEnglishLevelEntity editApplicantEnglishLevel(ApplicantEnglishLevelEntity applicantEnglishLevelEntity) {
+    public ApplicantEnglishLevelDto editApplicantEnglishLevel(ApplicantEnglishLevelDto applicantEnglishLevelDto) {
+
+        ApplicantEnglishLevelEntity applicantEnglishLevelEntity = mapper.mapFrom(applicantEnglishLevelDto);
         ApplicantEnglishLevelEntity currentUserLanguage = repository.findByApplicantEnglishLevelId(applicantEnglishLevelEntity.getApplicantEnglishLevelId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "applicantEnglishLevelNotFound"));
 
         utils.assertCurrentUserOwns(currentUserLanguage.getUser().getUserId());
         applicantEnglishLevelEntity.setUser(currentUserLanguage.getUser());
-        return repository.save(applicantEnglishLevelEntity);
+        ApplicantEnglishLevelEntity savedApplicantEnglishLevel =  repository.save(applicantEnglishLevelEntity);
+        return mapper.mapTo(savedApplicantEnglishLevel);
     }
 
     @Override
-    public ApplicantEnglishLevelEntity save(ApplicantEnglishLevelEntity applicantEnglishLevelEntity) {
+    public ApplicantEnglishLevelDto save(ApplicantEnglishLevelDto applicantEnglishLevelDto) {
+
+        ApplicantEnglishLevelEntity applicantEnglishLevelEntity = mapper.mapFrom(applicantEnglishLevelDto);
         UserEntity currentUser = utils.getCurrentUser();
         applicantEnglishLevelEntity.setUser(currentUser);
-        return repository.save(applicantEnglishLevelEntity);
+        ApplicantEnglishLevelEntity savedApplicantEnglishLevel = repository.save(applicantEnglishLevelEntity);
+        return mapper.mapTo(savedApplicantEnglishLevel);
     }
 
     @Override

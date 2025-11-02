@@ -1,20 +1,19 @@
 package com.example.job_application_eval.service;
 
-import com.example.job_application_eval.entities.EducationEntity;
-import com.example.job_application_eval.entities.WorkExperienceEntity;
+import com.example.job_application_eval.dtos.WorkExperienceDto;
 
 import java.util.List;
 
 public interface WorkExperienceService {
 
 
-    WorkExperienceEntity deleteWorkExperience(Long workExperienceId);
+    WorkExperienceDto deleteWorkExperience(Long workExperienceId);
 
-    List<WorkExperienceEntity> findWorkExperiencesByUserId(Long userId);
+    List<WorkExperienceDto> findWorkExperiencesByUserId(Long userId);
 
-    WorkExperienceEntity editWorkExperience(WorkExperienceEntity workExperienceEntity);
+    WorkExperienceDto editWorkExperience(WorkExperienceDto WorkExperienceDto);
 
-    WorkExperienceEntity save(WorkExperienceEntity workExperienceEntity);
+    WorkExperienceDto save(WorkExperienceDto WorkExperienceDto);
 
-    WorkExperienceEntity findWorkExperienceById(Long workExperienceId);
+    WorkExperienceDto findWorkExperienceById(Long workExperienceId);
 }

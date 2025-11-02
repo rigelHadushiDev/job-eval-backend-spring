@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -42,7 +43,9 @@ public class SecurityConfiguration {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/refresh",
+                                "/refresh/revoke"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

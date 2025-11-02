@@ -1,19 +1,20 @@
 package com.example.job_application_eval.service;
 
 
+import com.example.job_application_eval.dtos.ApplicantEnglishLevelDto;
 import com.example.job_application_eval.entities.ApplicantEnglishLevelEntity;
 
 import java.util.List;
 
 public interface ApplicantEnglishLevelService {
 
-    ApplicantEnglishLevelEntity deleteApplicantEnglishLevel(Long applicantEnglishLevelId);
+    ApplicantEnglishLevelDto deleteApplicantEnglishLevel(Long applicantEnglishLevelId);
 
-    ApplicantEnglishLevelEntity findApplicantEnglishLevelByUserId(Long userId);
+    ApplicantEnglishLevelDto findApplicantEnglishLevelByUserId(Long userId);
 
-    ApplicantEnglishLevelEntity editApplicantEnglishLevel(ApplicantEnglishLevelEntity applicantEnglishLevelEntity);
+    ApplicantEnglishLevelDto editApplicantEnglishLevel(ApplicantEnglishLevelDto applicantEnglishLevelDto);
 
-    ApplicantEnglishLevelEntity save(ApplicantEnglishLevelEntity applicantEnglishLevelEntity);
+    ApplicantEnglishLevelDto save(ApplicantEnglishLevelDto applicantEnglishLevelDto);
 
     ApplicantEnglishLevelEntity findApplicantEnglishLevelById(Long applicantEnglishLevelId);
 }

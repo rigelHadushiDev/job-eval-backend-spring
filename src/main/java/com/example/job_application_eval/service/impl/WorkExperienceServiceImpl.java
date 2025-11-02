@@ -1,4 +1,6 @@
 package com.example.job_application_eval.service.impl;
+import com.example.job_application_eval.dtos.WorkExperienceDto;
+import com.example.job_application_eval.mappers.Mapper;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.job_application_eval.config.utils.Utils;
 import com.example.job_application_eval.dtos.WorkExperienceFastAPIDto;
@@ -24,9 +26,12 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.JsonNode;
 @Service
 @RequiredArgsConstructor
@@ -35,11 +40,13 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     private final WorkExperienceRepository repository;
     private final Utils utils;
     private final FastApiRequestService fastApiRequestService;
+    private final Mapper<WorkExperienceEntity, WorkExperienceDto> mapper;
 
     @Override
     @Transactional
-    public WorkExperienceEntity deleteWorkExperience(Long workExperienceId) {
-        WorkExperienceEntity currentExperience = findWorkExperienceById(workExperienceId);
+    public WorkExperienceDto deleteWorkExperience(Long workExperienceId) {
+        WorkExperienceDto currentExperienceDto = findWorkExperienceById(workExperienceId);
+        WorkExperienceEntity currentExperience = mapper.mapFrom(currentExperienceDto);
         utils.assertCurrentUserOwns(currentExperience.getUser().getUserId());
         repository.deleteById(workExperienceId);
 
@@ -55,21 +62,30 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteWorkExperienceFailed");
         }
-        return currentExperience;
+
+        return mapper.mapTo(currentExperience);
     }
 
     @Override
-    public List<WorkExperienceEntity> findWorkExperiencesByUserId(Long userId) {
+    public List<WorkExperienceDto> findWorkExperiencesByUserId(Long userId) {
         UserEntity currentUser = utils.getCurrentUser();
         if(!currentUser.getUserId().equals(userId) && currentUser.getRole() == Role.USER) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewWorkExperiences");
         }
-        return repository.findByUser_UserId(userId);
+        List<WorkExperienceEntity> entities = repository.findByUser_UserId(userId);
+        if (entities == null || entities.isEmpty()) return java.util.Collections.emptyList();
+
+        return entities.stream()
+                .map(mapper::mapTo)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override
     @Transactional
-    public WorkExperienceEntity editWorkExperience(WorkExperienceEntity workExperienceEntity) {
+    public WorkExperienceDto editWorkExperience(WorkExperienceDto WorkExperienceDto) {
+
+        WorkExperienceEntity workExperienceEntity = mapper.mapFrom(WorkExperienceDto);
+
         WorkExperienceEntity currentExperience = repository.findByWorkExperienceId(workExperienceEntity.getWorkExperienceId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "workExperienceNotFound"));
 
@@ -90,12 +106,16 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "editWorkExperienceFailed");
         }
-        return edited;
+
+        return mapper.mapTo(edited);
     }
 
     @Override
     @Transactional
-    public WorkExperienceEntity save(WorkExperienceEntity workExperienceEntity) {
+    public WorkExperienceDto save(WorkExperienceDto workExperienceDto) {
+
+        WorkExperienceEntity workExperienceEntity = mapper.mapFrom(workExperienceDto);
+
         UserEntity currentUser = utils.getCurrentUser();
         workExperienceEntity.setUser(currentUser);
         utils.validateAndUpdateWorkExperience(workExperienceEntity);
@@ -114,7 +134,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "saveWorkExperienceFailed");
         }
-        return saved;
+        return mapper.mapTo(saved);
     }
 
     private static WorkExperienceFastAPIDto getWorkExperienceFastAPIDto(WorkExperienceEntity workExperienceEntity) {
@@ -128,7 +148,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     }
 
     @Override
-    public WorkExperienceEntity findWorkExperienceById(Long workExperienceId) {
+    public WorkExperienceDto findWorkExperienceById(Long workExperienceId) {
         WorkExperienceEntity workExpEntity =  repository.findByWorkExperienceId(workExperienceId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "workExperienceNotFound"));
 
@@ -136,7 +156,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         if(!currentUser.getUserId().equals(workExpEntity.getUser().getUserId()) && currentUser.getRole() == Role.USER) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "unAuthorizedToViewWorkExperience");
         }
-        return workExpEntity;
+        return mapper.mapTo(workExpEntity);
     }
 
 }

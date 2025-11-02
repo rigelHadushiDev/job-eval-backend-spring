@@ -61,13 +61,6 @@ public class JwtServiceImpl implements JwtService {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    @Override
-    public String generateRefreshToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        // You can add additional claims to the refresh token if necessary
-        return buildToken(claims, userDetails, refreshTokenExpiration);
-    }
-
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
@@ -128,23 +121,4 @@ public class JwtServiceImpl implements JwtService {
         return List.of();
     }
 
-    public boolean validateRefreshToken(String refreshToken) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSignInKey())
-                    .build()
-                    .parseClaimsJws(refreshToken);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
-
-    public String refreshAccessToken(String refreshToken, UserDetails userDetails) {
-        if (validateRefreshToken(refreshToken)) {
-            return generateToken(userDetails);
-        } else {
-            throw new JwtException("Invalid refresh token");
-        }
-    }
 }

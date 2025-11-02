@@ -1,10 +1,8 @@
 package com.example.job_application_eval.dtos;
-import com.example.job_application_eval.entities.UserEntity;
+
 import com.example.job_application_eval.entities.enums.EducationLevel;
 import com.example.job_application_eval.validation.OnEditEducation;
-import com.example.job_application_eval.validation.OnEditUser;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
@@ -12,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 

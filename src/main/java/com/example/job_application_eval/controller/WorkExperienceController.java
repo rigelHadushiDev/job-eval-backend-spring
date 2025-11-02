@@ -23,42 +23,35 @@ import java.util.stream.Collectors;
 public class WorkExperienceController {
 
     private final WorkExperienceService workExperienceService;
-    private final Mapper<WorkExperienceEntity, WorkExperienceDto> mapper;
-
 
     @DeleteMapping()
     public ResponseEntity<WorkExperienceDto> deleteWorkExperience(@RequestParam Long workExperienceId) {
-        WorkExperienceEntity deletedWorkExperience = workExperienceService.deleteWorkExperience(workExperienceId);
-        return new ResponseEntity<>(mapper.mapTo(deletedWorkExperience), HttpStatus.OK);
+        WorkExperienceDto deletedWorkExperience = workExperienceService.deleteWorkExperience(workExperienceId);
+        return ResponseEntity.ok(deletedWorkExperience);
     }
 
     @GetMapping("/userWorkExperiences")
     public ResponseEntity<List<WorkExperienceDto>> findWorkExperienceByUserId(@RequestParam Long userId) {
-        List<WorkExperienceEntity> workExperienceEntities = workExperienceService.findWorkExperiencesByUserId(userId);
-        List<WorkExperienceDto> workExperienceDto = workExperienceEntities.stream()
-                .map(mapper::mapTo)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(workExperienceDto, HttpStatus.OK);
+        List<WorkExperienceDto> workExperienceDtos = workExperienceService.findWorkExperiencesByUserId(userId);
+        return ResponseEntity.ok(workExperienceDtos);
     }
 
     @GetMapping("/getWorkExperience")
     public ResponseEntity<WorkExperienceDto> getWorkExperienceById(@RequestParam Long workExperienceId) {
-        WorkExperienceEntity extractedWorkExperience = workExperienceService.findWorkExperienceById(workExperienceId);
-        return new ResponseEntity<>(mapper.mapTo(extractedWorkExperience), HttpStatus.OK);
+        WorkExperienceDto extractedWorkExperience = workExperienceService.findWorkExperienceById(workExperienceId);
+        return ResponseEntity.ok(extractedWorkExperience);
     }
 
 
     @PostMapping("create")
     public ResponseEntity<WorkExperienceDto> createWorkExperience(@Valid  @RequestBody WorkExperienceDto workExperienceDto) {
-        WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(workExperienceDto);
-        WorkExperienceEntity updatedWorkExperience = workExperienceService.save(WorkExperienceEntity);
-        return new ResponseEntity<>(mapper.mapTo(updatedWorkExperience), HttpStatus.OK);
+        WorkExperienceDto savedWorkExperience = workExperienceService.save(workExperienceDto);
+        return ResponseEntity.ok(savedWorkExperience);
     }
 
     @PutMapping("edit")
     public ResponseEntity<WorkExperienceDto> editWorkExperience(@Validated(OnEditWorkExp.class) @RequestBody WorkExperienceDto workExperienceDto) {
-        WorkExperienceEntity WorkExperienceEntity = mapper.mapFrom(workExperienceDto);
-        WorkExperienceEntity updatedWorkExperience = workExperienceService.editWorkExperience(WorkExperienceEntity);
-        return new ResponseEntity<>(mapper.mapTo(updatedWorkExperience), HttpStatus.OK);
+        WorkExperienceDto updatedWorkExperience = workExperienceService.editWorkExperience(workExperienceDto);
+        return ResponseEntity.ok(updatedWorkExperience);
     }
 }

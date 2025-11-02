@@ -1,5 +1,6 @@
 package com.example.job_application_eval.service;
 
+import com.example.job_application_eval.dtos.EducationDto;
 import com.example.job_application_eval.entities.EducationEntity;
 import com.example.job_application_eval.entities.UserEntity;
 import org.springframework.data.domain.Page;
@@ -9,13 +10,13 @@ import java.util.List;
 
 public interface EducationService {
 
-    EducationEntity deleteEducation(Long educationId);
+    EducationDto deleteEducation(Long educationId);
 
-    List<EducationEntity> findEducationsByUserId(Long userId);
+    List<EducationDto> findEducationsByUserId(Long userId);
 
-    EducationEntity editEducation(EducationEntity educationEntity);
+    EducationDto editEducation(EducationDto educationDto);
 
-    EducationEntity save(EducationEntity educationEntity);
+    EducationDto save(EducationDto educationDto);
 
-    EducationEntity findEducationById(Long educationId);
+    EducationDto findEducationById(Long educationId);
 }

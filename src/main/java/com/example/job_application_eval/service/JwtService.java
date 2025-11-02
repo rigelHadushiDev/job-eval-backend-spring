@@ -21,7 +21,4 @@ public interface JwtService {
 
     List<String> extractRoles(String token);
 
-    String generateRefreshToken(UserDetails userDetails);
-
-    boolean validateRefreshToken(String token);
 }
