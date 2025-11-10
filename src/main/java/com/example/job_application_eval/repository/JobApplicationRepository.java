@@ -13,16 +13,6 @@ import java.util.List;
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long>, JpaSpecificationExecutor<JobApplicationEntity> {
 
-    Page<JobApplicationEntity> findByStatus(ApplicationStatus status, Pageable pageable);
-
-    Page<JobApplicationEntity> findByJobPosting_JobPostingId(Long jobPostingId, Pageable pageable);
-
-    Page<JobApplicationEntity> findByStatusAndJobPosting_JobPostingId(
-            ApplicationStatus status,
-            Long jobPostingId,
-            Pageable pageable
-    );
-
     Page<JobApplicationEntity> findByUser_UserId(Long userId, Pageable pageable);
 
     JobApplicationEntity findByUser_UserIdAndJobPosting_JobPostingId(

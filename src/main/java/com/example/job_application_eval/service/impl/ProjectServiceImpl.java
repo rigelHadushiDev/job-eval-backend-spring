@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,7 +53,8 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDto editProject(ProjectDto projectDto) {
 
         ProjectEntity projectEntity = mapper.mapFrom(projectDto);
-        ProjectEntity currentProject = repository.findByProjectId(projectEntity.getProjectId())
+        ProjectEntity currentProject = Optional
+                .ofNullable(repository.findByProjectId(projectEntity.getProjectId()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "projectNotFound"));
 
         utils.assertCurrentUserOwns(currentProject.getUser().getUserId());
@@ -77,7 +79,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDto findProjectById(Long projectId) {
 
-        ProjectEntity projectEntity =  repository.findByProjectId(projectId)
+        ProjectEntity projectEntity =  Optional
+                .ofNullable(repository.findByProjectId(projectId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "projectNotFound"));
 
         UserEntity currentUser = utils.getCurrentUser();

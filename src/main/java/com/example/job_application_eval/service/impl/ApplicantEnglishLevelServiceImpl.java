@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +46,8 @@ public class ApplicantEnglishLevelServiceImpl implements ApplicantEnglishLevelSe
     public ApplicantEnglishLevelDto editApplicantEnglishLevel(ApplicantEnglishLevelDto applicantEnglishLevelDto) {
 
         ApplicantEnglishLevelEntity applicantEnglishLevelEntity = mapper.mapFrom(applicantEnglishLevelDto);
-        ApplicantEnglishLevelEntity currentUserLanguage = repository.findByApplicantEnglishLevelId(applicantEnglishLevelEntity.getApplicantEnglishLevelId())
+        ApplicantEnglishLevelEntity currentUserLanguage =
+                repository.findByApplicantEnglishLevelId(applicantEnglishLevelEntity.getApplicantEnglishLevelId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "applicantEnglishLevelNotFound"));
 
         utils.assertCurrentUserOwns(currentUserLanguage.getUser().getUserId());
@@ -68,7 +68,8 @@ public class ApplicantEnglishLevelServiceImpl implements ApplicantEnglishLevelSe
 
     @Override
     public ApplicantEnglishLevelEntity findApplicantEnglishLevelById(Long applicantEnglishLevelId) {
-        ApplicantEnglishLevelEntity applicantEnglishLevelEntity =  repository.findByApplicantEnglishLevelId(applicantEnglishLevelId)
+        ApplicantEnglishLevelEntity applicantEnglishLevelEntity =
+                repository.findByApplicantEnglishLevelId(applicantEnglishLevelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "applicantEnglishLevelNotFound"));
 
         UserEntity currentUser = utils.getCurrentUser();
